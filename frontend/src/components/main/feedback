@@ -1,0 +1,23 @@
+<div className="path">
+        <div className="path-group-mask">
+          <img className="groupWrapper7" src={group20}  />
+          <div className="mask">
+            <span className="hello-scarlett">Hello, Scarlett!</span>
+            <span className="welcome-home-the-ai">
+              Welcome Home! The air quality is good &amp; fresh you can go out
+              today.
+            </span>
+            <div className="flex-container">
+              <img className="path-1" src={path} />
+              <span className="num-25">+25</span>
+              <img className="oval" src={oval} />
+              <span className="yngzeemnlalqy">C</span>
+              <span className="outdoor-temperature">Outdoor temperature</span>
+            </div>
+            <div className="flex-container-1">
+              <img className="path-1" src={path1} />
+              <span className="fuzzy-cloudy-weather">Fuzzy cloudy weather</span>
+            </div>
+          </div>
+        </div>
+      </div>
