@@ -5,6 +5,10 @@
     border-radius: 0px 15px 15px 0px;
 }
 
+.sidebar__container {
+    max-width: 20%;
+}
+
 .sidebar__icon {
     color: whitesmoke !important;
 }
@@ -29,4 +33,5 @@ margin-top: 5% !important;
     visibility: visible !important;
   transition-delay: 0.1s;
   }
+
 

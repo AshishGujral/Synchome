@@ -1,4 +1,4 @@
-import './Header.css' ;
+import './Sidebar.css' ;
 import {
     Drawer,
     ListItem,
@@ -32,7 +32,7 @@ import { motion } from "framer-motion";
   ];
   
 
-  function Header() {
+  function Sidebar() {
     const [open, setOpen] = useState(false);
   
     const getList = () => (
@@ -68,4 +68,4 @@ import { motion } from "framer-motion";
     );
   }
   
-  export default Header;
+  export default Sidebar;
