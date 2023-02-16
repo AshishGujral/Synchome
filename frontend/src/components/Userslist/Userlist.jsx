@@ -28,6 +28,7 @@ const Title = styled(Typography)`
 `;
 
 // fake data: replace this with userinfo from backend--------------------------------
+const endIndex = 4; // only rendering first 4 users on home screen
 const userData = [
   {
     id: 1,
@@ -53,17 +54,23 @@ const userData = [
     name: "Don",
     accessLevel: "No access",
   },
+  {
+    id: 5,
+    image: "https://images.pexels.com/photos/7266002/pexels-photo-7266002.jpeg?auto=compress&cs=tinysrgb&w=600",
+    name: "Don",
+    accessLevel: "No access",
+  },
 ];
 
 export default function Userlist() {
   return (
     <StyledStack direction="column" spacing={2}>
-      <Title>Members</Title>
+      <Title>Members (top 4)</Title>
       <StyledList
         className="box"
         sx={{ width: "100%", maxWidth: 360, bgcolor: "#f3e5f573" }}
       >
-        {userData.map(({ id, image, name, accessLevel }) => {
+        {userData.slice([0], [endIndex]).map(({ id, image, name, accessLevel }) => {
           return (
             <StyledListItem className={id}>
               <ListItemAvatar>
@@ -73,7 +80,7 @@ export default function Userlist() {
             </StyledListItem>
           );
         })}
-        
+
       </StyledList>
     </StyledStack>
   );
