@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Button, Menu, MenuItem } from '@mui/material';
-import { ArrowDropDown } from '@mui/icons-material';
-import './Main.css';
+import React, { useState } from "react";
+import { Button, Menu, MenuItem } from "@mui/material";
+import { ArrowDropDown } from "@mui/icons-material";
+import "./Main.css";
 
 const App = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedOption, setSelectedOption] = useState('Living Room');
+  const [selectedOption, setSelectedOption] = useState("Living Room");
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -50,14 +50,21 @@ const App = () => {
         </div>
 
         <div className="parent2">
-          <img className="pathIcon4" alt="" src="../../path2.svg" />
-          <div className="div7">25</div>
-          <img className="ovalIcon6" alt="" src="../../oval5.svg" />
-          <div className="c6">C</div>
+        <i className="fa-solid fa-temperature-quarter parent2Icon"></i>
+        <p className=""> indoor Temp ℃
+          </p>
+          <i className="fa-solid fa-droplet parent2Icon"> </i>
+          <p className=""> Humidity %
+          </p>
+         
         </div>
 
         <div className="dropdown-container">
-          <Button variant="outlined" onClick={handleClick} endIcon={<ArrowDropDown />}>
+          <Button
+            variant="outlined"
+            onClick={handleClick}
+            endIcon={<ArrowDropDown />}
+          >
             {selectedOption}
           </Button>
           <Menu
@@ -66,9 +73,11 @@ const App = () => {
             open={Boolean(anchorEl)}
             onClose={() => handleClose(null)}
           >
-            <MenuItem onClick={() => handleClose('Living Room')}>Living Room</MenuItem>
-            <MenuItem onClick={() => handleClose('Kitchen')}>Kitchen</MenuItem>
-            <MenuItem onClick={() => handleClose('Tokyo')}>Tokyo</MenuItem>
+            <MenuItem onClick={() => handleClose("Living Room")}>
+              Living Room
+            </MenuItem>
+            <MenuItem onClick={() => handleClose("Kitchen")}>Kitchen</MenuItem>
+            <MenuItem onClick={() => handleClose("Tokyo")}>Tokyo</MenuItem>
           </Menu>
         </div>
       </div>
