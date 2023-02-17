@@ -77,7 +77,7 @@ const Login = () => {
         <div className="form-container sign-up-container">
           <form onSubmit={handleSubmit}>
             <h1>Create Account</h1>
-            <div className="social-container">
+            {/* <div className="social-container">
               <a href="#" className="social">
                 <i className="fab fa-facebook-f"></i>
               </a>
@@ -87,8 +87,8 @@ const Login = () => {
               <a href="#" className="social">
                 <i className="fab fa-linkedin-in"></i>
               </a>
-            </div>
-            <span>or use your email for registration</span>
+            </div> */}
+            <span>use your email for registration</span>
             <input
               type="text"
               placeholder="Name"
@@ -112,7 +112,7 @@ const Login = () => {
         <div className="form-container sign-in-container">
           <form onSubmit={handleLoginSubmit}>
             <h1>Sign in</h1>
-            <div className="social-container">
+            {/* <div className="social-container">
               <a href="#" className="social">
                 <i className="fab fa-facebook-f"></i>
               </a>
@@ -122,8 +122,8 @@ const Login = () => {
               <a href="#" className="social">
                 <i className="fab fa-linkedin-in"></i>
               </a>
-            </div>
-            <span>or use your account</span>
+            </div> */}
+            {/* <span>or use your account</span> */}
             <input type="text" placeholder="Username" ref={userRef} />
             <input type="password" placeholder="Password" ref={passwordRef} />
             <a href="#">Forgot your password?</a>

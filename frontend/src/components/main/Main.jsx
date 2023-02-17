@@ -37,7 +37,7 @@ const App = () => {
                 </div>
               </div>
               <div className="fuzzyCloudyWeatherParent">
-              <i class="fa-regular fa-cloud"></i>
+              <i class="fa-solid fa-cloud"></i>
                 <div className="fuzzyCloudyWeather">Fuzzy cloudy weather</div>
               </div>
             </div>
