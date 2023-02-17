@@ -1,4 +1,4 @@
-import './Sidebar.css' ;
+import './sidebar.css' ;
 import {
     Drawer,
     ListItem,
@@ -36,7 +36,7 @@ import { motion } from "framer-motion";
     const [open, setOpen] = useState(false);
   
     const getList = () => (
-      <div className="sidebar" style={{ width: 140 }} onClick={() => setOpen(false)}>
+      <div className="sidebar"  onClick={() => setOpen(false)}>
         {data.map((item, index) => (
           <ListItem className='sidebar__item' button key={index}>
            <motion.i whileHover={{scale:1.3, }}>

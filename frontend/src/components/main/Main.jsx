@@ -29,7 +29,7 @@ const App = () => {
               <b className="helloScarlett">Hello, Scarlett!</b>
               <div className="outdoorTemperatureParent">
                 <div className="outdoorTemperature">Outdoor temperature</div>
-                <img className="pathIcon2" alt="" src="../../path2.svg" />
+                <i className="fa-solid fa-temperature-quarter pathIcon2"></i>
                 <div className="parent1">
                   <div className="div6">25</div>
                   <img className="ovalIcon5" alt="" src="../../oval5.svg" />
@@ -37,7 +37,7 @@ const App = () => {
                 </div>
               </div>
               <div className="fuzzyCloudyWeatherParent">
-                <img className="pathIcon3" alt="" src="../../path3.svg" />
+              <i class="fa-regular fa-cloud"></i>
                 <div className="fuzzyCloudyWeather">Fuzzy cloudy weather</div>
               </div>
             </div>
@@ -50,6 +50,7 @@ const App = () => {
         </div>
 
         <div className="parent2">
+      
         <i className="fa-solid fa-temperature-quarter parent2Icon"></i>
         <p className=""> indoor Temp ℃
           </p>
