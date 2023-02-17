@@ -36,7 +36,7 @@ const FourColumnDiv = () => {
           <div className="switch-on">Off</div>
         )}
         <div className="Switch">
-          {" "}
+         
           <Switch
             color="warning"
             checked={temperature}
@@ -67,7 +67,7 @@ const FourColumnDiv = () => {
           <div className="switch-on">Off</div>
         )}
         <div className="Switch">
-          {" "}
+       
           <Switch
             color="warning"
             checked={lights}
