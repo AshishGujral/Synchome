@@ -14,7 +14,7 @@ const FourColumnDiv = () => {
 
   return (
     <div className="group-42">
-      <div className="container" style={getContainerStyles(waterPump)}>
+      <div className="container__switch" style={getContainerStyles(waterPump)}>
         {waterPump ? (
           <div className="switch-on">On</div>
         ) : (
@@ -29,7 +29,7 @@ const FourColumnDiv = () => {
         </div>
         <span className="switch-content">Water Pump</span>
       </div>
-      <div className="container" style={getContainerStyles(temperature)}>
+      <div className="container__switch" style={getContainerStyles(temperature)}>
         {temperature ? (
           <div className="switch-on">On</div>
         ) : (
@@ -45,7 +45,7 @@ const FourColumnDiv = () => {
         </div>
         <span className="switch-content">Temperature</span>
       </div>
-      <div className="container" style={getContainerStyles(motionSensor)}>
+      <div className="container__switch" style={getContainerStyles(motionSensor)}>
         {motionSensor ? (
           <div className="switch-on">On</div>
         ) : (
@@ -60,7 +60,7 @@ const FourColumnDiv = () => {
         </div>
         <span className="switch-content">Motion Sensor</span>
       </div>
-      <div className="container" style={getContainerStyles(lights)}>
+      <div className="container__switch" style={getContainerStyles(lights)}>
         {lights ? (
           <div className="switch-on">On</div>
         ) : (
