@@ -8,10 +8,10 @@ import Avatar from "@mui/material/Avatar";
 // styled components-----------------------------
 const StyledStack = styled(Stack)`
   display: flex;
+  margin-left:20px;
   border: 2px solid red;
   border-radius: 5%;
-  left: 5%;
-  padding-left: 10px;
+  padding: 10px;
   max-height: 20%;
 `;
 
