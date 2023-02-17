@@ -7,6 +7,7 @@ import Topbar from "../../components/Topbar/Topbar";
 import Main from "../../components/main/Main";
 import FourColumnDiv from "../../components/main/FourColumnDiv";
 import Userlist from "../../components/Userslist/Userlist";
+import ChartExpense from "../../components/ChartExpense/ChartExpense";
 
 const SidebarGrid = styled(Grid)`
     max-width: 10%;
@@ -39,6 +40,7 @@ const Home = () => {
   <TopbarGrid className="rightColumn" item xs ={3}>
    <Topbar/>
    <Userlist />
+   <ChartExpense />
   </TopbarGrid>
 
 </ContainerGrid>

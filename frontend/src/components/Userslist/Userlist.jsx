@@ -68,11 +68,11 @@ export default function Userlist() {
       <Title>Members (top 4)</Title>
       <StyledList
         className="box"
-        sx={{ width: "100%", maxWidth: 360, bgcolor: "#f3e5f573" }}
+        sx={{ width: "100%", maxWidth: 360, bgcolor: "#f3e5f53e" }}
       >
         {userData.slice([0], [endIndex]).map(({ id, image, name, accessLevel }) => {
           return (
-            <StyledListItem className={id}>
+            <StyledListItem key={id} className={id}>
               <ListItemAvatar>
                 <Avatar alt={name} src={image} sx={{ width: 50, height: 50 }} />
               </ListItemAvatar>

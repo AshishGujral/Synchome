@@ -1,0 +1,13 @@
+.MuiOutlinedInput-notchedOutline {
+    border-width: 1px !important;
+    border-color: pink !important;
+  }
+  
+  .Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #FF9060 !important;
+    
+  }
+
+  .MuiInputLabel-outlined .MuiInputLabel-colorPrimary .Mui-focused {
+    color: #FF9060 !important;
+  }
