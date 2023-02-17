@@ -13,7 +13,7 @@
   }
 
  
-  .container {
+  .container__switch {
     color: #7a40f2;
     height: 100%;
     background-color: #fff;
@@ -30,13 +30,13 @@
     display: flex;
   }
 
-  .container:hover {
+  .container__switch:hover {
     box-shadow: rgba(123, 5, 241, 0.525) 0px 5px 15px;
   }
 
   
   
-  .container input[type="checkbox"]:checked + span {
+  .container__switch input[type="checkbox"]:checked + span {
     color: #fff;
     background-color: #7a40f2;
   }
@@ -76,7 +76,7 @@
     margin-left: 10px;
   }
   
-  .container {
+  .container__switch {
     color: #7a40f2;
     height: auto;
     background-color: #fff;
