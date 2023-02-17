@@ -3,6 +3,7 @@
     color: whitesmoke;
     height: 100%;
     border-radius: 0px 15px 15px 0px;
+    width:auto;
 }
 
 .sidebar__container {
@@ -18,7 +19,6 @@
     flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-indent: -25%;
   background-color: #7A40F2 !important;
   border-radius: 0px 15px 15px 0px !important;
   color: whitesmoke !important;

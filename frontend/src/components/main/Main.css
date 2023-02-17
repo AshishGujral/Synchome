@@ -118,6 +118,10 @@
   font-family: var(--font-poppins);
   color: #c45a01;
 }
+.pathIcon2{
+  margin-top: 6px;
+  margin-left: 3px;
+}
 .outdoorTemperatureParent {
   position: absolute;
   height: 16.09%;
@@ -135,16 +139,6 @@
   line-height: 18px;
   font-weight: 600;
 }
-.pathIcon2 {
-  height: 82.5%;
-  width: 4.71%;
-  top: 1%;
-  right: 95.29%;
-  max-width: 100%;
-  overflow: hidden;
-  max-height: 100%;
-}
-
 .parent1 {
   height: 100%;
   top: 0;
@@ -156,12 +150,10 @@
 }
 
 .c5,
-.div6,
-.pathIcon2 {
+.div6 {
   position: absolute;
 }
-.div6,
-.pathIcon2 {
+.div6{
   left: 0;
 }
 .c5,
@@ -296,17 +288,6 @@
     margin: 0 2px;
   }
 
-  .pathIcon3 {
-    height: auto;
-    width: 5.78%;
-    top: 1.11%;
-    right: 88.22%;
-    bottom: 1.11%;
-    left: 3px;
-    max-width: 100%;
-    max-height: 100%;
-  }
-
   .text {
     top: 15px;
     left: 15px;
@@ -354,14 +335,7 @@
     line-height: 20px;
     font-weight: 600;
   }
-  .pathIcon2 {
-    height: 82.5%;
-    top: 5%;
-    right: 95.29%;
-    max-width: 100%;
-    max-height: 100%;
-    width: 100%;
-  }
+ 
 
   .parent1 {
     height: 100%;
@@ -374,12 +348,10 @@
   }
 
   .c5,
-  .div6,
-  .pathIcon2 {
+  .div6 {
     position: absolute;
   }
-  .div6,
-  .pathIcon2 {
+  .div6 {
     left: 0;
   }
   .c5,
