@@ -22,7 +22,7 @@ const ContainerGrid = styled(Grid)`
     width: 100%;
 `
 const MainGrid = styled(Grid)`
- padding-left: 3vw;
+ padding-left: 2vw;
 `
 const Home = () => {
   return <>
