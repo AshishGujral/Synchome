@@ -1,6 +1,6 @@
-import "./home.css"
+import "./home.css";
 
-import {Grid, styled} from '@mui/material';
+import { dividerClasses, Grid, styled } from "@mui/material";
 // import { styled } from '@mui/system';
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Topbar from "../../components/Topbar/Topbar";
@@ -8,44 +8,59 @@ import Main from "../../components/main/Main";
 import FourColumnDiv from "../../components/main/FourColumnDiv";
 import Userlist from "../../components/Userslist/Userlist";
 import ChartExpense from "../../components/ChartExpense/ChartExpense";
+import { containerClasses } from "@mui/system";
+import WaterPumpIcon from '@mui/icons-material/Opacity';
+import TemperatureIcon from '@mui/icons-material/DeviceThermostat'
+import LightIcon from '@mui/icons-material/TipsAndUpdates'
+import MotionSensor from '@mui/icons-material/DirectionsRun'
 
 const SidebarGrid = styled(Grid)`
-    max-width: 10%;
+  max-width: 10%;
 `;
 const TopbarGrid = styled(Grid)`
-    right: 0;
-    top: 0;
-    float: right;
-  
+  right: 0;
+  top: 0;
+  float: right;
 `;
 const ContainerGrid = styled(Grid)`
-    justify-content: center;
-    width: 100%;
-`
+  justify-content: center;
+  width: 100%;
+`;
 const MainGrid = styled(Grid)`
- padding-left: 2vw;
-`
+  padding-left: 2vw;
+`;
+
 const Home = () => {
-  return <>
-   <ContainerGrid container spacing={2} justifyContent="flex-start">
+  return (
+    <>
+      <ContainerGrid container spacing={2} justifyContent="flex-start">
+        <SidebarGrid item xs={1}>
+          <Sidebar />
+        </SidebarGrid>
 
-  <SidebarGrid item xs={1}>
-   <Sidebar/>
-  </SidebarGrid>
+        <MainGrid item className="heroSection" xs={8}>
+          <Main />
+          <FourColumnDiv
+            switches={[
+              { name: "Water Pump", state: false, icon:<WaterPumpIcon/>},
+              { name: "Temperature", state: false , icon:<TemperatureIcon/>},
+              { name: "Motion Sensor", state: false , icon:<MotionSensor/>},
+              { name: "Lights", state: false, icon:<LightIcon/> },
+            ]}
+          />
+        </MainGrid>
 
-  <MainGrid item className='heroSection' xs={8}>
-   <Main/>
-   <FourColumnDiv/>
-  </MainGrid>
-
-  <TopbarGrid className="rightColumn" item xs ={3}>
-   <Topbar/>
-   <Userlist />
-   <ChartExpense />
-  </TopbarGrid>
-
-</ContainerGrid>
-  </>;
+        <TopbarGrid className="rightColumn" item xs={3}>
+          <Topbar />
+          <Userlist />
+          <div className="chart">
+          <ChartExpense />
+          </div>
+       
+        </TopbarGrid>
+      </ContainerGrid>
+    </>
+  );
 };
 
 export default Home;
