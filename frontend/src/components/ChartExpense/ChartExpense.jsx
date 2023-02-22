@@ -58,7 +58,6 @@ const ChartExpense = () => {
     border: "2px solid red",
     borderRadius: "5%",
     backgroundColor: "#f3e5f53e",
-    marginTop: "10%",
     height: "300px",
   });
 

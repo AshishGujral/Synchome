@@ -1,81 +1,42 @@
-import * as React from "react";
-import "./FourColumnDiv.css";
-import Switch from "@mui/material/Switch";
-const FourColumnDiv = () => {
-  const [waterPump, setWaterPump] = React.useState(false);
-  const [temperature, setTemperature] = React.useState(false);
-  const [motionSensor, setMotionSensor] = React.useState(false);
-  const [lights, setLights] = React.useState(false);
+import React, { useState } from 'react';
+import './FourColumnDiv.css';
+import Switch from '@mui/material/Switch';
+
+const FourColumnDiv = ({ switches }) => {
+  const [state, setState] = useState(switches);
 
   const getContainerStyles = (isOn) => ({
-    backgroundColor: isOn ? "#7a40f2" : "#fff",
-    color: isOn ? "#fff" : "#7a40f2",
+    backgroundColor: isOn ? '#7a40f2' : '#fff',
+    color: isOn ? '#fff' : '#7a40f2',
   });
+
+  const handleSwitchChange = (index) => {
+    const newSwitches = [...state];
+    newSwitches[index].state = !newSwitches[index].state;
+    setState(newSwitches);
+  };
 
   return (
     <div className="group-42">
-      <div className="container__switch" style={getContainerStyles(waterPump)}>
-        {waterPump ? (
-          <div className="switch-on">On</div>
-        ) : (
-          <div className="switch-on">Off</div>
-        )}
-        <div className="Switch">
-          <Switch
-            color="warning"
-            checked={waterPump}
-            onChange={() => setWaterPump(!waterPump)}
-          />
+      {state.map((switchItem, index) => (
+        <div
+          key={index}
+          className="container__switch"
+          style={getContainerStyles(switchItem.state)}
+        >
+          <div className="switch-on">{switchItem.state ? 'On' : 'Off'}</div>
+      
+          <div className="Switch">
+            <Switch
+              color="warning"
+              checked={switchItem.state}
+              onChange={() => handleSwitchChange(index)}
+            />
+          </div>
+          <div className='FourcolumnIcon'>{switchItem.icon}</div>
+          <span className="switch-content">{switchItem.name}</span>
         </div>
-        <span className="switch-content">Water Pump</span>
-      </div>
-      <div className="container__switch" style={getContainerStyles(temperature)}>
-        {temperature ? (
-          <div className="switch-on">On</div>
-        ) : (
-          <div className="switch-on">Off</div>
-        )}
-        <div className="Switch">
-         
-          <Switch
-            color="warning"
-            checked={temperature}
-            onChange={() => setTemperature(!temperature)}
-          />
-        </div>
-        <span className="switch-content">Temperature</span>
-      </div>
-      <div className="container__switch" style={getContainerStyles(motionSensor)}>
-        {motionSensor ? (
-          <div className="switch-on">On</div>
-        ) : (
-          <div className="switch-on">Off</div>
-        )}
-        <div className="Switch">
-          <Switch
-            color="warning"
-            checked={motionSensor}
-            onChange={() => setMotionSensor(!motionSensor)}
-          />
-        </div>
-        <span className="switch-content">Motion Sensor</span>
-      </div>
-      <div className="container__switch" style={getContainerStyles(lights)}>
-        {lights ? (
-          <div className="switch-on">On</div>
-        ) : (
-          <div className="switch-on">Off</div>
-        )}
-        <div className="Switch">
-       
-          <Switch
-            color="warning"
-            checked={lights}
-            onChange={() => setLights(!lights)}
-          />
-        </div>
-        <span className="switch-content">Lights</span>
-      </div>
+      ))}
     </div>
   );
 };

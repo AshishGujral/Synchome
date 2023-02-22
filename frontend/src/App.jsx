@@ -1,6 +1,7 @@
 import "./App.css";
 import Home from "./pages/Home/Home";
 import Login from "./pages/login/Login";
+import AcControlHome from "./components/Ac Control/AcControlHome";
 
 import {
   BrowserRouter as Router,
@@ -32,9 +33,9 @@ const [user, setUser] = useState(true);
     <Router>
       {/* insert outlet if any  */}
       <Routes>
-
+      <Route path="/accontrol" element={<AcControlHome />}></Route>
         <Route path="/login" element={<Login />}></Route>
-
+       
         <Route path="/" element={<ProtectedRoute user={user} />}>
           <Route path="/" element={<Home />} />
         </Route>
