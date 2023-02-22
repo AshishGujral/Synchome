@@ -68,3 +68,7 @@
     font-weight: bold;
    
   }
+
+  .controls-content {
+      box-shadow: rgba(123, 5, 241, 0.525) 0px 5px 15px;
+  }
