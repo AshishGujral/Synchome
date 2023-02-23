@@ -12,6 +12,7 @@ import KitchenIcon from "@mui/icons-material/Kitchen";
 import HallIcon from '@mui/icons-material/Weekend';
 import BasementIcon from '@mui/icons-material/MeetingRoom';
 import "./AcControlMain.css";
+
 const ContainerGrid = styled(Grid)`
   justify-content: center;
   width: 100%;
@@ -41,7 +42,20 @@ export default class AcControlMain extends Component {
           </div>
           <div className="Controls">
             Controls
-            <div className="controls-content">
+            
+            <div className="controls-content" id="controls">
+            <label for="controls">Kitchen</label>
+              <IconButton size="large"  className="addIcon" >
+                <AddIcon fontSize="large" />
+              </IconButton>
+                <div className="controls-content-content">38°C</div>
+              <IconButton size="large" className="removeIcon">
+                <RemoveIcon fontSize="large" />
+              </IconButton>
+            </div>
+
+            <div className="controls-content" id="controls">
+             <label for="controls">Hall</label>
               <IconButton size="large"  className="addIcon" >
                 <AddIcon fontSize="large" />
               </IconButton>
