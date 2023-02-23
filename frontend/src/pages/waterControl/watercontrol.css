@@ -38,10 +38,12 @@
 
 .water__info h4 {
     font-weight: 700;
+    font-size: large;
 }
 
 .water__info h5 {
     color: rgb(84, 81, 81);
+    font-size: medium;
 }
 
 label {
