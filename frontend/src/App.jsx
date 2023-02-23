@@ -11,6 +11,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useContext, useState } from "react";
+import WaterControl from "./pages/waterControl/waterControl";
 // import { Context } from "./context/Context";
 
 const ProtectedRoute = ({ user, redirectPath = "/login" }) => {
@@ -33,11 +34,17 @@ const [user, setUser] = useState(true);
     <Router>
       {/* insert outlet if any  */}
       <Routes>
-      <Route path="/accontrol" element={<AcControlHome />}></Route>
+        {/* ! make this protected route */}
+      <Route path="/accontrol" element={<AcControlHome />}></Route> 
         <Route path="/login" element={<Login />}></Route>
+
        
         <Route path="/" element={<ProtectedRoute user={user} />}>
           <Route path="/" element={<Home />} />
+        </Route>
+
+        <Route path="/waterControl" element={<ProtectedRoute user={user} />}>
+          <Route path="/waterControl" element={<WaterControl />} />
         </Route>
 
       </Routes>
