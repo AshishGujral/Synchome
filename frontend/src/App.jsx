@@ -12,7 +12,7 @@ import {
 } from "react-router-dom";
 import { useContext, useState } from "react";
 import WaterControl from "./pages/waterControl/waterControl";
-// import { Context } from "./context/Context";
+import { Context } from "./context/Context";
 
 const ProtectedRoute = ({ user, redirectPath = "/login" }) => {
   if (!user) {
@@ -25,11 +25,11 @@ const ProtectedRoute = ({ user, redirectPath = "/login" }) => {
     </>
   );
 };
-// ! for testing protected routes// delete this later
+
 
 function App() {
-const [user, setUser] = useState(true); 
- 
+// const [user, setUser] = useState(true); // before register
+const {user} = useContext(Context);
   return (
     <Router>
       {/* insert outlet if any  */}

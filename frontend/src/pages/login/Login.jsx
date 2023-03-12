@@ -2,6 +2,7 @@ import axios from "axios";
 import { useRef, useState, useContext } from "react";
 import "./login.css";
 import { useNavigate } from "react-router-dom";
+import { Context } from "../../context/Context";
 
 const Login = () => {
   const [toggleState, setToggleState] = useState(0); // toggle login/signup
@@ -14,56 +15,49 @@ const Login = () => {
 
   const userRef = useRef();
   const passwordRef = useRef();
-  // const {user, dispatch, isFetching } = useContext(Context);
+  const { user, dispatch, isFetching } = useContext(Context);
 
   const toggleLogin = (index) => {
     setToggleState(index);
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setError(false);
-  //   try {
-  //     const res = await axios.post("/auth/register", {
-  //       username,
-  //       email,
-  //       password,
-  //     });
-  //     res.data && setToggleState(0);
-  //   } catch (error) {
-  //     setError(true);
-  //     console.log(error);
-  //   }
-  // };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(false);
+    try {
+      const res = await axios.post("/api/auth/register", {
+        username,
+        email,
+        password,
+      });
+      res.data && setToggleState(0);
+    } catch (error) {
+      setError(true);
+      console.log(error);
+    }
+  };
 
-  // const handleLoginSubmit = async (e) => {
-  //   e.preventDefault();
-  //   dispatch({
-  //     type: "LOGIN_START",
-  //   });
-  //   try {
-  //     const res = await axios.post("/auth/login", {
-  //       username: userRef.current.value,
-  //       password: passwordRef.current.value,
-  //     });
-  //     dispatch({
-  //       type: "LOGIN_SUCCESS",
-  //       payload: res.data,
-  //     });
-  //     navigate('/');
-  //   } catch (error) {
-  //     dispatch({
-  //       type: "LOGIN_FAILURE",
-  //     });
-  //   }
-  // };
-
-  const handleSubmit = () =>{
-    console.log("signup testing")
-  }
-  const handleLoginSubmit = () =>{
-    console.log("Login testing")
-  }
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    dispatch({
+      type: "LOGIN_START",
+    });
+    try {
+      const res = await axios.post("/api/auth/login", {
+        username: userRef.current.value,
+        password: passwordRef.current.value,
+      });
+      dispatch({
+        type: "LOGIN_SUCCESS",
+        payload: res.data,
+      });
+      navigate("/");
+    } catch (error) {
+      dispatch({
+        type: "LOGIN_FAILURE",
+      });
+    }
+  };
 
   // console.log(user);
   return (
@@ -127,9 +121,9 @@ const Login = () => {
             <input type="text" placeholder="Username" ref={userRef} />
             <input type="password" placeholder="Password" ref={passwordRef} />
             <a href="#">Forgot your password?</a>
-            <button type="submit" 
-            // disabled={isFetching}
-            >Sign In</button>
+            <button type="submit" disabled={isFetching}>
+              Sign In
+            </button>
           </form>
         </div>
 
