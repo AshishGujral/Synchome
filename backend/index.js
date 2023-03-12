@@ -1,3 +1,4 @@
+
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -49,3 +50,4 @@ app.listen("5000", () => {
 const USERNAME = process.env.DB_USERNAME;
 const PASSWORD = process.env.PASSWORD;
 Connection(USERNAME, PASSWORD);
+
