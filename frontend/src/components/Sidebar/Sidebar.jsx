@@ -1,5 +1,7 @@
 import "./sidebar.css";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { Context } from "../../context/Context";
 import {
   Drawer,
   ListItem,
@@ -36,7 +38,11 @@ const data = [
 
 function Sidebar() {
   const [open, setOpen] = useState(false);
+  const { user, dispatch } = useContext(Context);
 
+  const handleLogout = () => {
+    dispatch({ type: "LOGOUT" });
+  };
   const getList = () => (
     <div className="sidebar" onClick={() => setOpen(false)}>
       {data.map((item, index) => (
@@ -62,13 +68,17 @@ function Sidebar() {
       >
         {getList()}
         <Divider />
-        <ListItem className="sidebar__item sidebar__logout" button key={10}>
+
+        <Link to="/login">
+        <ListItem onClick={handleLogout}
+        className="sidebar__item sidebar__logout" button key={10}>
           <ListItemIcon className="sidebar__icon">
             <LogoutIcon />
           </ListItemIcon>
-
-          <ListItemText primary="Logout" />
+          <ListItemText primary="Logout"  />
         </ListItem>
+        </Link>
+  
       </Drawer>
     </div>
   );
