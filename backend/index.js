@@ -43,7 +43,7 @@ app.post("/backend/upload", upload.single("file"),(req, res)=>{
 app.use("/backend/auth", authRouter);
 app.use("/backend/users", userRouter);
 
-app.listen("5000", () => {
+app.listen("3000", () => {
   console.log("server is running");
 });
 

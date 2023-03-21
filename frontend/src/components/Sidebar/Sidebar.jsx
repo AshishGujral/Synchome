@@ -59,7 +59,6 @@ function Sidebar() {
   );
   return (
     <div className="sidebar__container">
-      <Button onClick={() => setOpen(true)}>Click me</Button>
       <Drawer
         variant="permanent"
         open={open}

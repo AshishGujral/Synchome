@@ -13,6 +13,7 @@ import {
 import { useContext, useState } from "react";
 import WaterControl from "./pages/waterControl/waterControl";
 import { Context } from "./context/Context";
+import UserHome from "./components/Userprofile/UserHome";
 
 const ProtectedRoute = ({ user, redirectPath = "/login" }) => {
   if (!user) {
@@ -35,7 +36,6 @@ const {user} = useContext(Context);
       {/* insert outlet if any  */}
       <Routes>
         {/* ! make this protected route */}
-      <Route path="/accontrol" element={<AcControlHome />}></Route> 
         <Route path="/login" element={<Login />}></Route>
 
        
@@ -45,6 +45,13 @@ const {user} = useContext(Context);
 
         <Route path="/waterControl" element={<ProtectedRoute user={user} />}>
           <Route path="/waterControl" element={<WaterControl />} />
+        </Route>
+
+        <Route path="/accontrol" element={<ProtectedRoute user={user} />}>
+          <Route path="/accontrol" element={<AcControlHome />} />
+        </Route>
+        <Route path="/UserHome" element={<ProtectedRoute user={user} />}>
+          <Route path="/UserHome" element={<UserHome/>} />
         </Route>
 
       </Routes>

@@ -1,11 +1,13 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
-
+import jwt from 'jsonwebtoken';
 const router = express.Router();
+
 
 // update user
 router.put("/:id", async (req, res) => {
+
   if (req.body.userId === req.params.id) {
     if (req.body.password) {
       const salt = await bcrypt.genSalt(10);
@@ -24,7 +26,7 @@ router.put("/:id", async (req, res) => {
       res.status(500).json(error);
     }
   } else {
-    res.status(401).json("not your account");
+    res.status(403).json("not your account");
   }
 });
 

@@ -1,0 +1,17 @@
+.heroSection {
+    padding-left: 3vw !important;
+}
+
+.rightColumn {
+   
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    flex-direction: column !important;
+    justify-content: center;
+    height: fit-content;
+    
+}
+.chart{
+    margin-top: 10%;
+}
