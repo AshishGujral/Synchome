@@ -13,11 +13,7 @@
 .card {
   border-radius: 0.5rem;
 }
-
 /* Customize avatar image */
-.gradient-custom img {
-  width: 80px;
-}
 
 /* Customize name and role text */
 .gradient-custom h5 {

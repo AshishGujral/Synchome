@@ -29,7 +29,7 @@ const UserHome = () => {
         <SidebarGrid item xs={1}>
           <Sidebar />
         </SidebarGrid>
-        <Userprofile/>
+        <Userprofile />
       </ContainerGrid>
     </>
   );

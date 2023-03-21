@@ -11,10 +11,11 @@ export class Topbar extends Component {
     return (
         <div className='topbar'>
           <div className='topButtons'>
-          <Link to="/UserHome">
+        
           <IconButton aria-label="delete"> <SettingsIcon/></IconButton>
-          </Link>
+          <Link to="/UserHome">
         <IconButton aria-label="delete"> <PersonIcon/></IconButton>
+        </Link>
           </div>
       
         
