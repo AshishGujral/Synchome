@@ -1,6 +1,13 @@
 const express = require('express');
+const axios = require('axios');
 
 const router = express.Router();
+
+//Manage LED
+router.get('/manageLed', (req, res)=>{
+    console.log(req.body.name);
+    res.send("Post API");
+})
 
 //Post Method
 router.post('/post', (req, res) => {

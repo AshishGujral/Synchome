@@ -6,13 +6,9 @@ import bodyParser from "body-parser";
 import bcrypt from "bcrypt";
 import path from "path";
 import { fileURLToPath } from 'url';
-
 import Connection from "./database/db.js";
-
 import authRouter from "./routes/auth.js";
 import userRouter from "./routes/users.js";
-
-
 import multer from "multer";
 
 dotenv.config();
@@ -50,4 +46,3 @@ app.listen("3000", () => {
 const USERNAME = process.env.DB_USERNAME;
 const PASSWORD = process.env.PASSWORD;
 Connection(USERNAME, PASSWORD);
-
