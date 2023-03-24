@@ -1,94 +1,72 @@
 
-/* Define custom gradient */
-.gradient-custom {
-  background: #f6d365;
-  background: linear-gradient(
-    to right bottom,
-    rgba(246, 211, 101, 1),
-    rgba(253, 160, 133, 1)
-  );
-}
-
-/* Add styles to card */
-.card {
-  border-radius: 0.5rem;
-}
-/* Customize avatar image */
-
-/* Customize name and role text */
-.gradient-custom h5 {
-  color: white;
-}
-
-.gradient-custom p {
-  color: white;
-}
-
-/* Add styles to card body */
-.card-body {
-  padding: 2rem;
-}
-
-/* Customize headings */
-.card-body {
-  font-weight: 600;
-  height: 100%;
-}
-
-/* Add horizontal rule below headings */
-.card-body hr {
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-/* Add styles to muted text */
-.card-body .text-muted {
-  color: rgba(0, 0, 0, 0.6);
-  margin-bottom: 0;
-}
-
-/* Add styles to edit icon */
-.card-body .far.fa-edit {
-  color: #6c757d;
-  transition: color 0.2s;
-  cursor: pointer;
-}
-
-.card-body .far.fa-edit:hover {
-  color: #0d6efd;
-}
-
-/* Add styles to container and row */
-
-
 .main {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
-.row{
+
+.settingForm {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 3rem;
+}
+
+.settingPP {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.settingPP > img {
+  width: 70px;
+  height: 70px;
+  border-radius: 20px;
+  object-fit: cover;
+}
+
+.pic__upload {
 display: flex;
-flex-wrap: nowrap;
+flex-direction: row;
 }
-.col1{
-    width: 200px;
-    height: 60vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.col2{
-    width: 100%;
 
+.settingPPIcon {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background-color: rgb(189, 60, 222);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+  margin-left: 10px;
+  cursor: pointer;
 }
-.edit{
-    border-radius: 2em;
-    margin-top: 0;
-}
-.edit-password{
-    border-radius: 2em;
-    margin-top: 0;
-    display: flex;
 
+.settingForm > label {
+  font-size: 20px;
+  margin-top: 20px;
+  position: relative;
+}
+
+.settingForm > input {
+  color: gray;
+  margin: 10px 0;
+  height: 30px;
+  border: none;
+  border-bottom: 1px solid lightgray;
+}
+
+.settingSubmit{
+    width: 150px;
+    align-self: center;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    background-color: #7A40F2;
+    padding: 10px;
+    margin-top: 20px;
+    cursor: pointer;
 }
