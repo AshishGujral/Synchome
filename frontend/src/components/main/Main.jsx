@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { Context } from "../../context/Context";
 import { Button, Menu, MenuItem } from "@mui/material";
 import { ArrowDropDown } from "@mui/icons-material";
 import "./Main.css";
@@ -6,6 +7,7 @@ import "./Main.css";
 const App = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedOption, setSelectedOption] = useState("Living Room");
+  const { user } = useContext(Context);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -26,7 +28,7 @@ const App = () => {
             <img className="groupWrapper7" alt="" src="../../path1.svg" />
             <div className="text">
               <div className="welcomeHomeThe">{`Welcome Home! The air quality is good & fresh you can go out today.`}</div>
-              <b className="helloScarlett">Hello, Scarlett!</b>
+              <b className="helloScarlett">Hello, {user.username}</b>
               <div className="outdoorTemperatureParent">
                 <div className="outdoorTemperature">Outdoor temperature</div>
                 <i className="fa-solid fa-temperature-quarter pathIcon2"></i>

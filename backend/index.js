@@ -31,6 +31,7 @@ const storage = multer.diskStorage({ // store file in images folder, use the fil
   },
 });
 
+// for userProfilePic
 const upload = multer({storage:storage});
 app.post("/backend/upload", upload.single("file"),(req, res)=>{
     res.status(200).json("file is uploaded");

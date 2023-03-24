@@ -9,9 +9,7 @@ const router = express.Router();
 // update user
 router.put("/:id", async (req, res) => {
 
-    console.log('params'+req.params.id);
-    console.log('Id'+req.body.id);
-    if (req.body.id === req.params.id) {
+  if (req.body.userId === req.params.id) {
     if (req.body.password) {
       const salt = await bcrypt.genSalt(10);
       req.body.password = await bcrypt.hash(req.body.password, salt);
@@ -29,7 +27,7 @@ router.put("/:id", async (req, res) => {
       res.status(500).json(error);
     }
   } else {
-    res.status(403).json("not your account");
+    res.status(401).json("not your account");
   }
 });
 

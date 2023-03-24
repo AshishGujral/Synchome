@@ -43,6 +43,8 @@ export default function Userlist() {
     fetchData();
   }, []);
 
+  const PF = "http://localhost:3000/images/"
+
   return (
     <StyledStack direction="column" spacing={2}>
       <Title>Members (top 4)</Title>
@@ -50,12 +52,12 @@ export default function Userlist() {
         className="box"
         sx={{ width: "100%", maxWidth: 360, bgcolor: "#f3e5f53e" }}
       >
-        {userData.slice(0, endIndex).map(({ _id, username,email}) => {
+        {userData.slice(0, endIndex).map(({ _id, username,email, profilePic}) => {
           return (
             <StyledListItem key={_id} className={_id}>
-          {/* <ListItemAvatar> 
-                <Avatar alt={username} src={image} sx={{ width: 50, height: 50 }} />
-              </ListItemAvatar>*/}
+          <ListItemAvatar> 
+                <Avatar alt={username} src={PF+profilePic} sx={{ width: 50, height: 50 }} />
+              </ListItemAvatar>
               
               <ListItemText primary={username}/>
 
