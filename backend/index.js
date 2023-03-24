@@ -6,13 +6,9 @@ import bodyParser from "body-parser";
 import bcrypt from "bcrypt";
 import path from "path";
 import { fileURLToPath } from 'url';
-
 import Connection from "./database/db.js";
-
 import authRouter from "./routes/auth.js";
 import userRouter from "./routes/users.js";
-
-
 import multer from "multer";
 
 dotenv.config();
@@ -43,11 +39,10 @@ app.post("/backend/upload", upload.single("file"),(req, res)=>{
 app.use("/backend/auth", authRouter);
 app.use("/backend/users", userRouter);
 
-app.listen("5000", () => {
+app.listen("3000", () => {
   console.log("server is running");
 });
 
 const USERNAME = process.env.DB_USERNAME;
 const PASSWORD = process.env.PASSWORD;
 Connection(USERNAME, PASSWORD);
-

@@ -1,0 +1,94 @@
+
+/* Define custom gradient */
+.gradient-custom {
+  background: #f6d365;
+  background: linear-gradient(
+    to right bottom,
+    rgba(246, 211, 101, 1),
+    rgba(253, 160, 133, 1)
+  );
+}
+
+/* Add styles to card */
+.card {
+  border-radius: 0.5rem;
+}
+/* Customize avatar image */
+
+/* Customize name and role text */
+.gradient-custom h5 {
+  color: white;
+}
+
+.gradient-custom p {
+  color: white;
+}
+
+/* Add styles to card body */
+.card-body {
+  padding: 2rem;
+}
+
+/* Customize headings */
+.card-body {
+  font-weight: 600;
+  height: 100%;
+}
+
+/* Add horizontal rule below headings */
+.card-body hr {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Add styles to muted text */
+.card-body .text-muted {
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 0;
+}
+
+/* Add styles to edit icon */
+.card-body .far.fa-edit {
+  color: #6c757d;
+  transition: color 0.2s;
+  cursor: pointer;
+}
+
+.card-body .far.fa-edit:hover {
+  color: #0d6efd;
+}
+
+/* Add styles to container and row */
+
+
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.row{
+display: flex;
+flex-wrap: nowrap;
+}
+.col1{
+    width: 200px;
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.col2{
+    width: 100%;
+
+}
+.edit{
+    border-radius: 2em;
+    margin-top: 0;
+}
+.edit-password{
+    border-radius: 2em;
+    margin-top: 0;
+    display: flex;
+
+}

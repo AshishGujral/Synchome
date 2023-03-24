@@ -56,6 +56,7 @@ const Login = () => {
       dispatch({
         type: "LOGIN_FAILURE",
       });
+      setError(true);
     }
   };
 
@@ -124,6 +125,7 @@ const Login = () => {
             <button type="submit" disabled={isFetching}>
               Sign In
             </button>
+            {error && <span className="error">Invalid username or password</span>} 
           </form>
         </div>
 

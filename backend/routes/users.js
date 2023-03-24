@@ -1,12 +1,17 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
-
+import jwt from 'jsonwebtoken';
 const router = express.Router();
+
+
 
 // update user
 router.put("/:id", async (req, res) => {
-  if (req.body.userId === req.params.id) {
+
+    console.log('params'+req.params.id);
+    console.log('Id'+req.body.id);
+    if (req.body.id === req.params.id) {
     if (req.body.password) {
       const salt = await bcrypt.genSalt(10);
       req.body.password = await bcrypt.hash(req.body.password, salt);
@@ -24,7 +29,7 @@ router.put("/:id", async (req, res) => {
       res.status(500).json(error);
     }
   } else {
-    res.status(401).json("not your account");
+    res.status(403).json("not your account");
   }
 });
 
@@ -60,6 +65,16 @@ router.get("/:id", async(req,res)=> {
     } catch (error) {
         res.status(500).json(error);
     }
-})
+});
+// get all users
+router.get("/", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 
 export default router;
