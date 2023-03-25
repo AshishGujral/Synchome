@@ -11,9 +11,9 @@ const Userprofile = () => {
  const PF = "http://localhost:3000/images/"
 
 const [file, setFile] = useState(null);
-const [username, setUsername] = useState("");
-const [email, setEmail] = useState("");
-const [password, setPassword] = useState("");
+const [username, setUsername] = useState();
+const [email, setEmail] = useState();
+const [password, setPassword] = useState();
 const [success, setSuccess] = useState(false);
 
 const handleSubmit = async (e) => {
