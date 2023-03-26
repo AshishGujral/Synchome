@@ -13,6 +13,7 @@ const Userprofile = () => {
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState(user.password);
   const [success, setSuccess] = useState(false);
+  const [editMode, setEditMode] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,6 +37,7 @@ const Userprofile = () => {
     try {
       const res = await axios.put("api/users/" + user._id, updatedUser);
       setSuccess(true);
+      setEditMode(false);
       dispatch({ type: "UPDATE_SUCCESS", payload: res.data });
     } catch (err) {
       dispatch({ type: "UPDATE_FAILURE" });
@@ -59,37 +61,67 @@ const Userprofile = () => {
               alt="profile pic"
             />
           </div>
-          <label htmlFor="fileInput">
-            Upload pic
-            <i className="settingPPIcon far fa-user-circle"></i>
-          </label>
-          <input
-            type="file"
-            id="fileInput"
-            style={{ display: "none" }}
-            onChange={(e) => setFile(e.target.files[0])}
-          />
 
+          {editMode && (
+            <>
+              <label htmlFor="fileInput">
+                Upload pic
+                <i className="settingPPIcon far fa-user-circle"></i>
+              </label>
+              <input
+                type="file"
+                id="fileInput"
+                style={{ display: "none" }}
+                onChange={(e) => setFile(e.target.files[0])}
+              />
+            </>
+          )}
           <label>Username</label>
-          <input
-            type="text"
-            placeholder={user.username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
+          {editMode ? (
+            <input
+              type="text"
+              placeholder={user.username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          ) : (
+            <h4>{user.username}</h4>
+          )}
+
           <label>Email</label>
-          <input
-            type="email"
-            placeholder={user.email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <label>Password</label>
-          <input
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button className="settingSubmit" type="submit">
-            Update
+          {editMode ? (
+            <input
+              type="email"
+              placeholder={user.email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          ) : (
+            <h4>{user.email}</h4>
+          )}
+
+          {editMode && (
+            <>
+              <label>Password</label>
+
+              <input
+                type="password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </>
+          )}
+
+          <button
+            onClick={() => {
+              setEditMode(!editMode);
+            }}
+            className="settingSubmit" type="reset"
+          >
+            {editMode ? "Cancel" : "Edit"}
           </button>
+          {editMode && (
+            <button className="settingSubmit" type="submit">
+              Update
+            </button>
+          )}
           {success && (
             <span
               style={{ color: "green", textAlign: "center", margin: "20px" }}
