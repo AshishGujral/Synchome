@@ -16,29 +16,33 @@ import MotionSensor from '@mui/icons-material/DirectionsRun'
 
 const SidebarGrid = styled(Grid)`
   max-width: 10%;
+  
 `;
 const TopbarGrid = styled(Grid)`
   right: 0;
   top: 0;
   float: right;
+  
 `;
 const ContainerGrid = styled(Grid)`
   justify-content: center;
   width: 100%;
 `;
 const MainGrid = styled(Grid)`
-  padding-left: 2vw;
+  border: 1px solid red;
 `;
+
+
 
 const Home = () => {
   return (
     <>
-      <ContainerGrid container spacing={2} justifyContent="flex-start">
+      <ContainerGrid container spacing={1} justifyContent="flex-start">
         <SidebarGrid item xs={1}>
           <Sidebar />
         </SidebarGrid>
 
-        <MainGrid item className="heroSection" xs={8}>
+        <MainGrid className="heroSection" item xs={8}>
           <Main />
           <FourColumnDiv
             switches={[
