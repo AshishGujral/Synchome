@@ -2,6 +2,7 @@ import express, { response } from "express";
 import axios from "axios";
 import fetch from "node-fetch";
 import LED from "../models/Led.js";
+import DHT from "../models/DHT.js";
 
 const router = express.Router();
 
@@ -37,7 +38,30 @@ router.post('/manageLed', async (req, res)=>{
             res.status(400).json({message: error.message});
         }
     }
-})
+});
+
+router.get("/manageDHT", async (req, res)=>{
+
+    const response = await fetch('http://10.0.0.48:80/handleDHT');
+
+    const responseData = await response.json();
+
+    if(responseData.success == "true"){
+        const data = new DHT({
+            temperature: responseData.temperature,
+            humidity: responseData.humidity
+        });
+
+        try{
+            const dataToSave = await data.save();
+            res.status(200).json(dataToSave);
+        }
+        catch(error){
+            res.status(400).json({message: error.message});
+        }  
+    }
+
+});
 
 //Post Method
 router.post('/post', (req, res) => {
