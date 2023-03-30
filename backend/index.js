@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url';
 import Connection from "./database/db.js";
 import authRouter from "./routes/auth.js";
 import userRouter from "./routes/users.js";
+import apiRouter from "./routes/routes.js";
 import multer from "multer";
 
 dotenv.config();
@@ -39,6 +40,7 @@ app.post("/backend/upload", upload.single("file"),(req, res)=>{
 
 app.use("/backend/auth", authRouter);
 app.use("/backend/users", userRouter);
+app.use("/backend/routes", apiRouter);
 
 app.listen("3000", () => {
   console.log("server is running");

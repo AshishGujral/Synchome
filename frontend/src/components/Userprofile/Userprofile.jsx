@@ -8,12 +8,15 @@ const Userprofile = () => {
   const { user, dispatch } = useContext(Context); // limitations of useContext
   const PF = "http://localhost:3000/images/";
 
+
+
   const [file, setFile] = useState(null);
   const [username, setUsername] = useState(user.username);
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState(user.password);
   const [success, setSuccess] = useState(false);
   const [editMode, setEditMode] = useState(false);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -1,7 +1,6 @@
-.heroSection {
-    padding-left: 3vw !important;
+.heroSection{
+    padding-left: -100px;
 }
-
 .rightColumn {
    
     display: flex;
@@ -14,4 +13,8 @@
 }
 .chart{
     margin-top: 10%;
+}
+
+@media (max-width: 940px) {
+
 }

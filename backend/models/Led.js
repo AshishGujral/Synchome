@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
-const ledSchema = new mongoose.Schema({
+const LedSchema = new mongoose.Schema({
     name:{
         required: true,
         type: String
@@ -13,7 +13,13 @@ const ledSchema = new mongoose.Schema({
     ledStatus:{
         required: true,
         type: String
+    },
+    mode:{
+        required:true,
+        type: String
     }
 });
 
-module.exports = mongoose.model('Led', ledSchema);
+const led  = mongoose.model('Led', LedSchema);
+
+export default led;
