@@ -1,131 +1,75 @@
 import React, { useState } from "react";
 import "./Userprofile.css";
 import axios from "axios";
-import IconButton from "@mui/material/IconButton";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { useContext } from "react";
 import { Context } from "../../context/Context";
 
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const Userprofile = () => {
-  const { user, dispatch } = useContext(Context);
-  const [username, setUsername] = useState(user.username);
-  const [email, setEmail] = useState(user.email);
-  const [password, setPassword] = useState();
-  const [editMode, setEditMode] = useState(false);
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [error, setError] = useState(false);
 
-  const handleEditClick = () => {
-    setEditMode(!editMode);
+  const { user, dispatch } = useContext(Context); // limitations of useContext
+ const PF = "http://localhost:3000/images/"
+
+const [file, setFile] = useState(null);
+const [username, setUsername] = useState();
+const [email, setEmail] = useState();
+const [password, setPassword] = useState();
+const [success, setSuccess] = useState(false);
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  dispatch({type:"UPDATE_START"})
+  const updatedUser = {
+    userId: user._id,
+    username,
+    email,
+    password,
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    dispatch({
-      type: "UPDATE_START",
-    });
+  if (file) {
+    const data =new FormData();
+    const filename = Date.now() + file.name;
+    data.append("name", filename);
+    data.append("file", file);
+    updatedUser.profilePic = filename;
     try {
-      const res = await axios.put("/api/users/" + user._id, {
-        id: user._id, // Add id to request body
-        username,
-        email,
-        password,
-      });
-      dispatch({ type: "UPDATE_SUCCESS", payload: res.data });
-      setEditMode(false);
-    } catch (error) {
-      dispatch({
-        type: "UPDATE_FAILURE",
-      });
-      setError(true);
-      console.log("hello" + error);
-    }
-  };
+      await axios.post("api/upload", data);
+    } catch (err) {}
+  }
+  try {
+  const res = await axios.put("api/users/"+user._id, updatedUser);
+  setSuccess(true);
+  dispatch({type:"UPDATE_SUCCESS", payload: res.data})
+  } catch (err) {
+      dispatch({type: "UPDATE_FAILURE"})
+  }
+};
+
 
   return (
     <section className="main">
       <div className="container ">
-        <div className="row">
-          <div className="col1 gradient-custom">
-            <AccountCircleIcon  style={{ fontSize: 60 }}/>
-            <h5>{username}</h5>
-            <IconButton onClick={handleEditClick}>
-              <EditOutlinedIcon />
-            </IconButton>
-          </div>
+      <form className="settingForm" onSubmit={handleSubmit}>
+                <label>Profile Picture</label>
+                <div className="settingPP">
+                    <img src={file ? URL.createObjectURL(file) : PF+user.profilePic} alt="" />
+                </div>
+                <label htmlFor="fileInput">
+                  Upload pic
+                <i className="settingPPIcon far fa-user-circle"></i>
+                </label>
+                <input type="file" id="fileInput" style={{display:"none"}} onChange={(e)=> setFile(e.target.files[0])}/>
 
-          <div className="col2">
-            <div className="card-body">
-              {editMode ? (
-                <div>
-                  <div className="child">
-                    <h6>UserName</h6>
-                    <input
-                      className="edit"
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                    />
-                  </div>
-                  <hr className="mt-0 mb-4" />
-                  <div className="child">
-                    <h6>Email</h6>
-                    <input
-                      className="edit"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-                  <hr className="mt-0 mb-4" />
-                  <div className="child-password">
-                    <h6>Password</h6>
-                    <div className="edit-password">
-                      <input
-                        className="edit"
-                        type={passwordVisible ? "text" : "password"}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                      ></input>
-                    </div>
-                  </div>
-                  <hr className="mt-0 mb-4" />
-                  <button onClick={handleSubmit}>Submit</button>
-                </div>
-              ) : (
-                <div>
-                  <div className="child">
-                    <h6>UserName</h6>
-                    <p className="text-muted">{username}</p>
-                  </div>
-                  <hr className="mt-0 mb-4" />
-                  <div className="child">
-                    <h6>Email</h6>
-                    <p className="text-muted">{email}</p>
-                  </div>
-                  <hr className="mt-0 mb-4" />
-                  <div className="child">
-                    <h6>Password</h6>
-                    <input
-                      type="password"
-                      style={{
-                        border: "none",
-                        outline: "none",
-                        background: "none",
-                        boxShadow: "none",
-                      }}
-                      value={password}
-                      disabled={true}
-                    />
-                  </div>
-                  <hr className="mt-0 mb-4" />
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+                <label>Username</label>
+                <input type="text" placeholder={user.username} onChange={e=>setUsername(e.target.value)}/>
+                <label>Email</label>
+                <input type="email" placeholder={user.email} onChange={e=>setEmail(e.target.value)}/> 
+                <label>Password</label>
+                <input type="password"  onChange={e=>setPassword(e.target.value)}/>
+                <button className="settingSubmit" type="submit">Update</button>
+                {
+                    success && <span style={{color:"green", textAlign:"center", margin:"20px"}}>Profile is updated </span>
+                }
+            </form>
       </div>
     </section>
   );
