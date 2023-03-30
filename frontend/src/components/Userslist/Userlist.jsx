@@ -10,7 +10,7 @@ import React from "react";
 // styled components-----------------------------
 const StyledStack = styled(Stack)`
   display: flex;
-  margin-left:20px;
+  margin-left: 20px;
   border: 2px solid red;
   border-radius: 5%;
   padding: 10px;
@@ -43,7 +43,7 @@ export default function Userlist() {
     fetchData();
   }, []);
 
-  const PF = "http://localhost:3000/images/"
+  const PF = "http://localhost:3000/images/";
 
   return (
     <StyledStack direction="column" spacing={2}>
@@ -52,19 +52,23 @@ export default function Userlist() {
         className="box"
         sx={{ width: "100%", maxWidth: 360, bgcolor: "#f3e5f53e" }}
       >
-        {userData.slice(0, endIndex).map(({ _id, username,email, profilePic}) => {
-          return (
-            <StyledListItem key={_id} className={_id}>
-          <ListItemAvatar> 
-                <Avatar alt={username} src={PF+profilePic} sx={{ width: 50, height: 50 }} />
-              </ListItemAvatar>
-              
-              <ListItemText primary={username}/>
+        {userData
+          .slice(0, endIndex)
+          .map(({ _id, username, email, profilePic }) => {
+            return (
+              <StyledListItem key={_id} className={_id}>
+                <ListItemAvatar>
+                  <Avatar
+                    alt={username}
+                    src={profilePic ? PF + profilePic : PF + "default-img.jpeg"}
+                    sx={{ width: 50, height: 50 }}
+                  />
+                </ListItemAvatar>
 
-            </StyledListItem>
-          );
-        })}
-
+                <ListItemText primary={username} />
+              </StyledListItem>
+            );
+          })}
       </StyledList>
     </StyledStack>
   );
