@@ -12,6 +12,7 @@ import {
 } from "react-router-dom";
 import { useContext, useState } from "react";
 import WaterControl from "./pages/waterControl/waterControl";
+import LedControl from "./pages/ledControl/LedControl"
 import { Context } from "./context/Context";
 import UserHome from "./components/Userprofile/UserHome";
 
@@ -50,6 +51,11 @@ const {user} = useContext(Context);
         <Route path="/accontrol" element={<ProtectedRoute user={user} />}>
           <Route path="/accontrol" element={<AcControlHome />} />
         </Route>
+
+        <Route path="/ledcontrol" element={<ProtectedRoute user={user} />}>
+          <Route path="/ledcontrol" element={<LedControl />} />
+        </Route>
+
         <Route path="/UserHome" element={<ProtectedRoute user={user} />}>
           <Route path="/UserHome" element={<UserHome/>} />
         </Route>
