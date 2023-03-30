@@ -1,12 +1,42 @@
-const express = require('express');
-const axios = require('axios');
+import express, { response } from "express";
+import axios from "axios";
+import fetch from "node-fetch";
+import LED from "../models/Led.js";
 
 const router = express.Router();
 
 //Manage LED
-router.get('/manageLed', (req, res)=>{
-    console.log(req.body.name);
-    res.send("Post API");
+router.post('/manageLed', async (req, res)=>{
+    const body ={
+        name: req.body.name,
+        mode: req.body.mode,
+        status: req.body.status
+    }
+
+    const response = await fetch('http://10.0.0.48:80/handleLED', {
+        method: 'post',
+        body: JSON.stringify(body),
+        headers: {'Content-Type': 'application/json'}
+    });
+    const responseData = await response.json();
+
+    if(responseData.success == "true"){
+
+        const data = new LED({
+            name: req.body.name,
+            time: Date.now(),
+            ledStatus: req.body.status,
+            mode: req.body.mode
+        })
+
+        try{
+            const dataToSave = await data.save();
+            res.status(200).json(dataToSave);
+        }
+        catch(error){
+            res.status(400).json({message: error.message});
+        }
+    }
 })
 
 //Post Method
@@ -34,4 +64,4 @@ router.delete('/delete/:id', (req, res) => {
     res.send('Delete by ID API');
 });
 
-module.exports = router;
+export default router;
