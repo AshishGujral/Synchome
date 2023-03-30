@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 
 const Connection = async (username, password) => {
-     const URL = `mongodb+srv://${username}:${password}@synchomecluster.p8a4wyk.mongodb.net/?retryWrites=true&w=majority`
-
+  const URL = `mongodb+srv://prathmesh300346562:douglas123@synchomecluster.p8a4wyk.mongodb.net/SyncHome?retryWrites=true&w=majority`;
+  
   mongoose.set("strictQuery", false);
   try {
     await mongoose.connect(URL, {
