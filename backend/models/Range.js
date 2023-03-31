@@ -1,19 +1,23 @@
 import mongoose from "mongoose";
 
 const RangeSchema = new mongoose.Schema({
-    name:{
+    tempMax:{
         required: true,
-        type: String
+        type: Number
+    },
+    tempMin:{
+        required: true,
+        type: Number
     },
     time:{
         required: true,
         type: String
     },
-    minRange:{
+    humMax:{
         required: true,
         type: Number
     },
-    maxRange:{
+    humMin:{
         required: true,
         type: Number
     },
