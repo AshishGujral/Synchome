@@ -28,7 +28,7 @@ const data = [
   { name: "Inbox", icon: <InboxOutlined /> },
   { name: "Lights",link:"/ledcontrol", icon: <EmojiObjectsIcon /> },
   { name: "Plants", link: "/waterControl", icon: <YardOutlinedIcon /> },
-  { name: "Proximity", icon: <SpatialTrackingOutlinedIcon /> },
+  { name: "Proximity", link: "/motioncontrol", icon: <SpatialTrackingOutlinedIcon /> },
   {
     name: "Weather",
     link: "/accontrol",
