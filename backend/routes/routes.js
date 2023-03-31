@@ -3,6 +3,8 @@ import axios from "axios";
 import fetch from "node-fetch";
 import LED from "../models/Led.js";
 import DHT from "../models/DHT.js";
+import MOTION from "../models/Motion.js";
+import RANGE from "../models/Range.js";
 
 const router = express.Router();
 
@@ -41,7 +43,8 @@ router.post('/manageLed', async (req, res)=>{
     }
 });
 
-router.get("/manageDHT", async (req, res)=>{
+//Manage DHT(Temperature and Humidity)
+router.post("/manageDHT", async (req, res)=>{
 
     const response = await fetch('http://10.0.0.48:80/handleDHT');
 
@@ -50,7 +53,9 @@ router.get("/manageDHT", async (req, res)=>{
     if(responseData.success == "true"){
         const data = new DHT({
             temperature: responseData.temperature,
-            humidity: responseData.humidity
+            humidity: responseData.humidity,
+            time: Date.now(),
+            userId: req.body.userId
         });
 
         try{
@@ -63,6 +68,59 @@ router.get("/manageDHT", async (req, res)=>{
     }
 
 });
+
+//Manage Motion
+router.post("/manageMotion", async(req, res)=>{
+
+    const body = {
+        status: req.body.status
+    }
+
+    const response = await fetch('http://10.0.0.48:80/handleMotion', {
+        method: 'post',
+        body: JSON.stringify(body),
+        headers: {'Content-Type': 'application/json'}
+    });
+
+    const responseData = await response.json();
+
+    if(responseData.success == "true"){
+        const data = new MOTION({
+            time: Date.now(),
+            status: req.body.status,
+            userId: req.body.userId
+        });
+
+        try{
+            const dataToSave = await data.save();
+            res.status(200).json(dataToSave);
+        }
+        catch(error){
+            res.status(400).json({message: error.message});
+        }  
+    }
+});
+
+//Save Temperature and  Range Data
+router.post("/saveRange", async(req, res)=>{
+    const body = {
+        name: req.body.name,
+        time: Date.now(),
+        minRange: parseInt(req.body.minRange),
+        maxRange: parseInt(req.body.maxRange),
+        userId: req.body.userId
+    }
+
+    const data = new RANGE(body);
+
+    try{
+        const dataToSave = await data.save();
+        res.status(200).json(dataToSave);
+    }
+    catch(error){
+        res.status(400).json({message: error.message});
+    }  
+})
 
 //Post Method
 router.post('/post', (req, res) => {
