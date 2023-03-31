@@ -1,6 +1,7 @@
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Topbar from "../../components/Topbar/Topbar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { Context } from "../../context/Context";
 import axios from "axios";
 import SwitchContainer from "../../components/Switch/SwitchContainer";
 
@@ -33,6 +34,8 @@ const MainGrid = styled(Grid)`
 
 
 const LedControl = () => {
+  const {user} = useContext(Context);
+  
   const [mode, setMode] = useState("NORMAL");
 
   const [nameOne, setNameOne] = useState("red");
@@ -57,6 +60,7 @@ const LedControl = () => {
 
     try {
       await axios.post("/api/routes/manageLed", {
+        userId: user._id,
         name: nameOne,
         mode: mode,
         status: status,
@@ -72,15 +76,16 @@ const LedControl = () => {
 
     console.log("Button clicked", status, "two");
 
-    // try {
-    //   await axios.post("/api/routes/manageLed", {
-    //     name: nameTwo,
-    //     mode: mode,
-    //     status: status,
-    //   });
-    // } catch (err) {
-    //   console.log(err);
-    // }
+    try {
+      await axios.post("/api/routes/manageLed", {
+        userId: user._id,
+        name: nameTwo,
+        mode: mode,
+        status: status,
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const switchToggleThree = async () => {
@@ -89,15 +94,16 @@ const LedControl = () => {
 
     console.log("Button clicked", status, "three");
 
-    // try {
-    //   await axios.post("/api/routes/manageLed", {
-    //     name: nameThree,
-    //     mode: mode,
-    //     status: status,
-    //   });
-    // } catch (err) {
-    //   console.log(err);
-    // }
+    try {
+      await axios.post("/api/routes/manageLed", {
+        userId: user._id,
+        name: nameThree,
+        mode: mode,
+        status: status,
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const switchToggleAll = async () => {
@@ -110,15 +116,16 @@ const LedControl = () => {
 
     console.log("Button clicked", status, "All");
 
-    // try {
-    //   await axios.post("/api/routes/manageLed", {
-    //     name: "All",
-    //     mode: mode,
-    //     status: status,
-    //   });
-    // } catch (err) {
-    //   console.log(err);
-    // }
+    try {
+      await axios.post("/api/routes/manageLed", {
+        userId: user._id,
+        name: "All",
+        mode: mode,
+        status: status,
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -174,10 +181,10 @@ const LedControl = () => {
        
           </div>
           <FormControl fullWidth sx={{ marginTop: "4em" }}>
-          <InputLabel sx={{color:"#fb641b"}} id="demo-simple-select-label">Mode</InputLabel>
+          <InputLabel sx={{color:"#fb641b"}} id="">Mode</InputLabel>
           <Select
-            labelId="demo-select-small"
-            id="demo-select-small"
+            labelId=""
+            id=""
             value={mode}
             label="mode"
             onChange={handleSelectChange}

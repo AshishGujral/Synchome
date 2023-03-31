@@ -23,8 +23,10 @@
   border-radius: 25px;
   margin-top: 20px;
   display: flex;
+  flex-direction: column;
   position: relative;
   justify-content: center;
+  align-items: center;
   direction: row;
   box-shadow: rgba(123, 5, 241, 0.525) 0px 5px 15px;
 }
