@@ -1,6 +1,15 @@
 import { Add, Bloodtype } from "@mui/icons-material";
 import { fontSize, fontWeight } from "@mui/system";
-import { Grid, Typography, styled } from "@mui/material";
+import {
+  Grid,
+  Typography,
+  styled,
+  Radio,
+  RadioGroup,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+} from "@mui/material";
 import React, { Component, useState } from "react";
 import ChartExpense from "../ChartExpense/ChartExpense";
 import FourColumnDiv from "../main/FourColumnDiv";
@@ -29,15 +38,24 @@ const minDistance = 10;
 
 const AcControlMain = () => {
   const [value2, setValue2] = React.useState([20, 37]);
+  const [value1, setValue1] = React.useState([20, 37]);
+  const [fanSpeed, setFanSpeed] = React.useState("a");
+
   const [sensorData, setSensorData] = useState("");
 
   useEffect(() => {
     const getTempAndHum = async () => {
-      const res = await axios.get("/api/routes/manageDHT");
+      const res = await axios.post("/api/routes/manageDHT", {
+        userId: user._id,
+      });
       setSensorData(res.data);
     };
     getTempAndHum();
-  },[]);
+  }, []);
+
+  const handleChange3 = (event) => {
+    setFanSpeed(event.target.value);
+  };
 
   const handleChange2 = (event, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) {
@@ -54,6 +72,23 @@ const AcControlMain = () => {
       }
     } else {
       setValue2(newValue);
+    }
+  };
+  const handleChange1 = (event, newValue, activeThumb) => {
+    if (!Array.isArray(newValue)) {
+      return;
+    }
+
+    if (newValue[1] - newValue[0] < minDistance) {
+      if (activeThumb === 0) {
+        const clamped = Math.min(newValue[0], 100 - minDistance);
+        setValue1([clamped, clamped + minDistance]);
+      } else {
+        const clamped = Math.max(newValue[1], minDistance);
+        setValue1([clamped - minDistance, clamped]);
+      }
+    } else {
+      setValue1(newValue);
     }
   };
   {
@@ -80,7 +115,7 @@ const AcControlMain = () => {
           <div className="Controls">
             Controls
             <div className="controls-content" id="controls">
-              <Box sx={{ width: 300, display: "flex", gap:"1em" }}>
+              <Box sx={{ width: 300, display: "flex", gap: "1em" }}>
                 <Typography variant="h5">{value2[0]}</Typography>
                 <Slider
                   getAriaLabel={() => "Minimum distance shift"}
@@ -97,14 +132,49 @@ const AcControlMain = () => {
               </Box>
             </div>
             <div className="controls-content" id="controls">
-              <label for="controls">Hall</label>
-              <IconButton size="large" className="addIcon">
-                <AddIcon fontSize="large" />
-              </IconButton>
-              <div className="controls-content-content">38°C</div>
-              <IconButton size="large" className="removeIcon">
-                <RemoveIcon fontSize="large" />
-              </IconButton>
+              <Box sx={{ width: 300, display: "flex", gap: "1em" }}>
+                <Typography variant="h5">{value1[0]}</Typography>
+                <Slider
+                  getAriaLabel={() => "Minimum distance shift"}
+                  value={value1}
+                  onChange={handleChange1}
+                  valueLabelDisplay="auto"
+                  getAriaValueText={valuetext}
+                  disableSwap
+                />
+                <Typography variant="h5">{value1[1]}</Typography>
+              </Box>
+              <Box>
+                <Typography variant="h5">Indoor Humidity</Typography>
+              </Box>
+            </div>
+            <div className="controls-content" id="controls">
+              <Box sx={{ display: "flex", flexDirection: "row" }}>
+                <FormLabel id="demo-controlled-radio-buttons-group">
+                  Fan Speed
+                </FormLabel>
+                <div className="radio__ac">
+                <label>One</label>
+                <Radio
+                  checked={fanSpeed === "a"}
+                  onChange={handleChange3}
+                  value="a"
+                  name="radio-buttons"
+                  inputProps={{ "aria-label": "A" }}
+                />
+                </div>
+             <div className="radio__ac">
+              <label>Two</label>
+              <Radio
+                  checked={fanSpeed === "b"}
+                  onChange={handleChange3}
+                  value="b"
+                  name="radio-buttons"
+                  inputProps={{ "aria-label": "B" }}
+                />
+             </div>
+          
+              </Box>
             </div>
           </div>
         </div>
