@@ -17,6 +17,10 @@ const LedSchema = new mongoose.Schema({
     mode:{
         required:true,
         type: String
+    },
+    userId:{
+        required: true,
+        type: String
     }
 });
 
