@@ -31,11 +31,17 @@
   box-shadow: rgba(123, 5, 241, 0.525) 0px 5px 15px;
 }
 
-label { 
+.radio__ac label { 
   position:absolute;
- top: 0.5ex;
+ top: 0.2ex;
   z-index: 1;
   font-size: small;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin-bottom: 5%;
+  color: grey;
+  font-weight: 200;
+  
+
 }
 .controls-content-content {
   display: inline-block;
