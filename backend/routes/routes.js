@@ -27,7 +27,8 @@ router.post('/manageLed', async (req, res)=>{
             name: req.body.name,
             time: Date.now(),
             ledStatus: req.body.status,
-            mode: req.body.mode
+            mode: req.body.mode,
+            userId: req.body.userId
         })
 
         try{
