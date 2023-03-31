@@ -27,6 +27,6 @@ const RangeSchema = new mongoose.Schema({
     }
 });
 
-const motion = mongoose.model("Motion", MotionSchema);
+const range = mongoose.model("Range", RangeSchema);
 
-export default motion;
+export default range;
