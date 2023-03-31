@@ -26,7 +26,7 @@ const data = [
     icon: <HomeOutlined />,
   },
   { name: "Inbox", icon: <InboxOutlined /> },
-  { name: "Lights", icon: <EmojiObjectsIcon /> },
+  { name: "Lights",link:"/ledcontrol", icon: <EmojiObjectsIcon /> },
   { name: "Plants", link: "/waterControl", icon: <YardOutlinedIcon /> },
   { name: "Proximity", icon: <SpatialTrackingOutlinedIcon /> },
   {
@@ -69,15 +69,18 @@ function Sidebar() {
         <Divider />
 
         <Link to="/login">
-        <ListItem onClick={handleLogout}
-        className="sidebar__item sidebar__logout" button key={10}>
-          <ListItemIcon className="sidebar__icon">
-            <LogoutIcon />
-          </ListItemIcon>
-          <ListItemText primary="Logout"  />
-        </ListItem>
+          <ListItem
+            onClick={handleLogout}
+            className="sidebar__item sidebar__logout"
+            button
+            key={10}
+          >
+            <ListItemIcon className="sidebar__icon">
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItem>
         </Link>
-  
       </Drawer>
     </div>
   );
