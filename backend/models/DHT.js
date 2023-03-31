@@ -13,6 +13,10 @@ const DhtSchema = new mongoose.Schema({
         required: true,
         type: Date,
         default: Date.now
+    },
+    userId:{
+        required: true,
+        type: String
     }
 });
 
