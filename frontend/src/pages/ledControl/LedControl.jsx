@@ -58,16 +58,16 @@ const LedControl = () => {
 
     const status = valueOne ? "OFF" : "ON";
 
-    try {
-      await axios.post("/api/routes/manageLed", {
-        userId: user._id,
-        name: nameOne,
-        mode: mode,
-        status: status,
-      });
-    } catch (err) {
-      console.log(err);
-    }
+    // try {
+    //   await axios.post("/api/routes/manageLed", {
+    //     userId: user._id,
+    //     name: nameOne,
+    //     mode: mode,
+    //     status: status,
+    //   });
+    // } catch (err) {
+    //   console.log(err);
+    // }
   };
 
   const switchToggleTwo = async () => {
