@@ -53,10 +53,10 @@ const MotionControl = () => {
               </div>
               <div className="water__info" id="water__info">
                 <label for="water__info">Yard</label>
-                <h4>Last watered:</h4>
+                <h4>Last triggred:</h4>
                 {/* insert data */}
-                <h5>{`${time}hrs ago by ${accessedBy}`}</h5>
-                <h4>Water received this week:</h4>
+                <h5>{`${time}hrs ago`}</h5>
+                <h4>Total triggres this received this week:</h4>
                 <h5>{`${waterConsumed} Liters`}</h5>
               </div>
             </div>
