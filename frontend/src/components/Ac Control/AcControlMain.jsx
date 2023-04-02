@@ -42,6 +42,57 @@ const AcControlMain = () => {
   const [fanSpeed, setFanSpeed] = React.useState("a");
 
   const [sensorData, setSensorData] = useState("");
+  const [nameOne, setNameOne] = useState("Kitchen");
+  const [valueOne, setValueOne] = useState(false);
+  const [nameTwo, setNameTwo] = useState("Hall");
+  const [valueTwo, setValueTwo] = useState(false);
+  const [nameThree, setNameThree] = useState("Basement");
+  const [valueThree, setValueThree] = useState(false);
+  const switchToggleOne = async () => {
+    setValueOne(!valueOne);
+
+    const status = valueOne ? "OFF" : "ON";
+    console.log("Kitchen ",status);
+   /* try {
+      await axios.post("/api/routes/manageLed", {
+        name: nameOne,
+        mode: mode,
+        status: status,
+      });
+    } catch (err) {
+      console.log(err);
+    }*/
+  };
+  const switchToggleTwo = async () => {
+    setValueTwo(!valueTwo);
+
+    const status = valueTwo ? "OFF" : "ON";
+    console.log("Hall ",status);
+   /* try {
+      await axios.post("/api/routes/manageLed", {
+        name: nameOne,
+        mode: mode,
+        status: status,
+      });
+    } catch (err) {
+      console.log(err);
+    }*/
+  };
+  const switchToggleThree = async () => {
+    setValueThree(!valueThree);
+
+    const status = valueThree ? "OFF" : "ON";
+    console.log("Basement ",status);
+   /* try {
+      await axios.post("/api/routes/manageLed", {
+        name: nameOne,
+        mode: mode,
+        status: status,
+      });
+    } catch (err) {
+      console.log(err);
+    }*/
+  };
 
   useEffect(() => {
     const getTempAndHum = async () => {
@@ -96,11 +147,11 @@ const AcControlMain = () => {
       <div>
         <div className="M">AC Control</div>
         <div>
-          <FourColumnDiv
+        <FourColumnDiv
             switches={[
-              { name: "Kitchen", state: false, icon: <KitchenIcon /> },
-              { name: "Hall", state: false, icon: <HallIcon /> },
-              { name: "Basement", state: false, icon: <BasementIcon /> },
+              { name: nameOne, state: valueOne, icon:<KitchenIcon/>,handleChange: switchToggleOne, color:'#7a40f2'},
+              { name: nameTwo, state: valueTwo, icon:<HallIcon/>,handleChange: switchToggleTwo, color:'#7a40f2'},
+              { name: nameThree, state: valueThree, icon:<BasementIcon/>,handleChange: switchToggleThree, color:'#7a40f2'},
             ]}
           />
         </div>

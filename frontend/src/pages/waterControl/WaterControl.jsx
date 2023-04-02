@@ -3,7 +3,7 @@ import Topbar from "../../components/Topbar/Topbar";
 import FourColumnDiv from "../../components/main/FourColumnDiv";
 import ChartExpense from "../../components/ChartExpense/ChartExpense";
 import "./watercontrol.css"
-
+import { useEffect, useState } from "react";
 import ForestIcon from "@mui/icons-material/Forest";
 import { Grid, styled } from "@mui/material";
 
@@ -32,6 +32,25 @@ const infoData = [{
 
 
 const WaterControl = () => {
+  const [nameOne, setNameOne] = useState("Yard");
+  const [valueOne, setValueOne] = useState(false);
+
+  const switchToggleOne = async () => {
+    setValueOne(!valueOne);
+
+    const status = valueOne ? "OFF" : "ON";
+    console.log("yard ",status);
+   /* try {
+      await axios.post("/api/routes/manageLed", {
+        name: nameOne,
+        mode: mode,
+        status: status,
+      });
+    } catch (err) {
+      console.log(err);
+    }*/
+  };
+
   return (
     <ContainerGrid container spacing={2} justifyContent="flex-start">
       <SidebarGrid item xs={1}>
@@ -45,7 +64,9 @@ const WaterControl = () => {
                 <div className="water__wrapper">
                 <div className="water__switches">
                   <FourColumnDiv
-                    switches={[{ name: "Yard", state: false, icon: <ForestIcon /> }]}
+                    switches={[
+                      { name: nameOne, state: valueOne, icon:<ForestIcon/>,handleChange: switchToggleOne, color:'#7a40f2',}
+                    ]}
                   />
                 </div>
                 <div className="water__chartInfo">
