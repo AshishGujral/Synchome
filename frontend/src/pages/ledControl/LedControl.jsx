@@ -4,8 +4,9 @@ import { useEffect, useState, useContext } from "react";
 import { Context } from "../../context/Context";
 import axios from "axios";
 import SwitchContainer from "../../components/Switch/SwitchContainer";
-
+import LightIcon from '@mui/icons-material/TipsAndUpdates'
 import "./ledcontrol.css";
+import FourColumnDiv from "../../components/main/FourColumnDiv";
 
 import {
   Grid,
@@ -127,7 +128,40 @@ const LedControl = () => {
       console.log(err);
     }
   };
-
+ const switches = [
+    {
+      state: valueOne,
+      name: nameOne,
+      checked: valueOne,
+      icon: <LightIcon/>,
+      color:nameOne,
+      handleChange: switchToggleOne,
+    },
+    {
+      state: valueTwo,
+      name: nameTwo,
+      checked: valueTwo,
+      icon: <LightIcon/>,
+      color:nameTwo,
+      handleChange: switchToggleTwo,
+    },
+    {
+      state: valueThree,
+      name: nameThree,
+      checked: valueThree,
+      color:nameThree,
+      icon: <LightIcon/>,
+      handleChange: switchToggleThree,
+    },
+    {
+      state: valueAll,
+      name: 'All',
+      checked: valueOne,
+      icon: <LightIcon/>,
+      color:'#7a40f2',
+      handleChange: switchToggleAll,
+    },
+  ];
   return (
     <ContainerGrid container spacing={2} justifyContent="flex-start">
       <SidebarGrid item xs={1}>
@@ -136,51 +170,13 @@ const LedControl = () => {
 
       {/* ---------------------------------------------------------- */}
       <MainGrid item className="led__herosection" xs={8}>
-        <div className="led__wrapper">
-          <div className="led__switches">
-            <div>
-              <SwitchContainer
-                checked={valueOne}
-                key={1}
-                icon={"fa-solid fa-1"}
-                name={nameOne}
-                color="secondary"
-                handleChange={switchToggleOne}
-              ></SwitchContainer>
-            </div>
-            <div>
-              <SwitchContainer
-                checked={valueTwo}
-                key={2}
-                icon={"fa-solid fa-2"}
-                name={nameTwo}
-                color="success"
-                handleChange={switchToggleTwo}
-              ></SwitchContainer>
-            </div>{" "}
-            <div>
-              <SwitchContainer
-                checked={valueThree}
-                key={3}
-                icon={"fa-solid fa-3"}
-                name={nameThree}
-                color="primary"
-                handleChange={switchToggleThree}
-              ></SwitchContainer>
-            </div>
-            <div>
-              <SwitchContainer
-                checked={valueAll}
-                key={4}
-                icon={"fa-solid fa-arrow-up-1-9"}
-                name={"All"}
-                color="default"
-                handleChange={switchToggleAll}
-              ></SwitchContainer>
-            </div>
-       
-          </div>
-          <FormControl fullWidth sx={{ marginTop: "4em" }}>
+      <div className="led__wrapper">
+        <div className="led__switches">
+        <FourColumnDiv switches={switches}>
+          
+        </FourColumnDiv>
+        </div>
+       <FormControl fullWidth sx={{ marginTop: "4em" }}>
           <InputLabel sx={{color:"#fb641b"}} id="">Mode</InputLabel>
           <Select
             labelId=""
@@ -194,7 +190,6 @@ const LedControl = () => {
           </Select>
         </FormControl>
         </div>
-
 
       </MainGrid>
       {/* ----------------------------------------------- */}

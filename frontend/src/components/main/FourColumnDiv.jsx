@@ -3,26 +3,24 @@ import './FourColumnDiv.css';
 import Switch from '@mui/material/Switch';
 
 const FourColumnDiv = ({ switches }) => {
-  const [state, setState] = useState(switches);
-
-  const getContainerStyles = (isOn) => ({
-    backgroundColor: isOn ? '#7a40f2' : '#fff',
-    color: isOn ? '#fff' : '#7a40f2',
-  });
-
-  const handleSwitchChange = (index) => {
-    const newSwitches = [...state];
-    newSwitches[index].state = !newSwitches[index].state;
-    setState(newSwitches);
+  const handleSwitchChange= (index) => {
+    switches[index].state = !switches[index].state;
+    switches[index].handleChange();
+   
   };
+
+  const getContainerStyles = (isOn,color) => ({
+    backgroundColor: isOn ? color : '#fff',
+    color: isOn ? 'white' : color,
+  });
 
   return (
     <div className="group-42">
-      {state.map((switchItem, index) => (
+      {switches.map((switchItem, index) => (
         <div
           key={index}
           className="container__switch"
-          style={getContainerStyles(switchItem.state)}
+          style={getContainerStyles(switchItem.state,switchItem.color)}
         >
           <div className="switch-on">{switchItem.state ? 'On' : 'Off'}</div>
       
