@@ -102,20 +102,20 @@ router.post("/manageMotion", async(req, res)=>{
 });
 
 //Save Temperature and humidity Range Data
-router.post("/saveRange", async(req, res)=>{
+router.put("/saveRange/:id", async(req, res)=>{
     const body = {
-        tempMax:parseInt(req.body.tempVal),
-        tempMin: parseInt(req.body.humVal),
+        tempMax:(req.body.tempVal),
+        tempMin: (req.body.humVal),
         time: Date.now(),
-        humMax: parseInt(req.body.minRange),
-        humMin: parseInt(req.body.maxRange),
+        humMax: (req.body.minRange),
+        humMin: (req.body.maxRange),
         userId: req.body.userId
     }
 
     const data = new RANGE(body);
 
     try{
-        const dataToSave = await data.save();
+        const dataToSave = await data.findByIdAndUpdate();
         res.status(200).json(dataToSave);
     }
     catch(error){
