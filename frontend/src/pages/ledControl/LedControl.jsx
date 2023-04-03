@@ -52,12 +52,30 @@ const LedControl = () => {
 
   const handleSelectChange = (event) => {
     setMode(event.target.value);
+      setValueOne(false);
+      setValueTwo(false);
+      setValueThree(false);
+      setValueAll(false);
+    if(valueAll){
+      switchToggleAll();
+    }
   };
 
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
-
+  
     const status = valueOne ? "OFF" : "ON";
+    // check if any switch off call switchtoggleall
+       // check if any switch off call switchtoggleall
+       if(status == 'OFF' && valueAll== true){ 
+        switchToggleAll();
+        setValueTwo(true);
+        setValueThree(true);
+      }
+       // check if every switch turns on it will turn on the all switch 
+    if(valueThree==true && valueTwo==true && status=='ON'){
+      switchToggleAll();
+    }
 
     try {
       await axios.post("/api/routes/manageLed", {
@@ -76,7 +94,17 @@ const LedControl = () => {
     const status = valueTwo ? "OFF" : "ON";
 
     console.log("Button clicked", status, "two");
-
+    // check if any switch off call switchtoggleall
+       // check if any switch off call switchtoggleall
+       if(status == 'OFF' && valueAll== true){ 
+        switchToggleAll();
+        setValueOne(true);
+        setValueThree(true);
+      }
+       // check if every switch turns on it will turn on the all switch 
+    if(valueOne==true && valueThree==true && status=='ON'){
+      switchToggleAll();
+    }
     try {
       await axios.post("/api/routes/manageLed", {
         userId: user._id,
@@ -94,7 +122,17 @@ const LedControl = () => {
     const status = valueThree ? "OFF" : "ON";
 
     console.log("Button clicked", status, "three");
-
+    // check if any switch off call switchtoggleall
+    // check if any switch off call switchtoggleall
+    if(status == 'OFF' && valueAll== true){ 
+      switchToggleAll();
+      setValueOne(true);
+      setValueTwo(true);
+    }
+    // check if every switch turns on it will turn on the all switch 
+    if(valueOne==true && valueTwo==true && status=='ON'){
+      switchToggleAll();
+    }
     try {
       await axios.post("/api/routes/manageLed", {
         userId: user._id,
