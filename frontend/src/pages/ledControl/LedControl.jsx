@@ -49,18 +49,76 @@ const LedControl = () => {
   const [valueThree, setValueThree] = useState(false);
 
   const [valueAll, setValueAll] = useState(false);
-
   const handleSelectChange = (event) => {
     setMode(event.target.value);
-      setValueOne(false);
-      setValueTwo(false);
-      setValueThree(false);
-      setValueAll(false);
-    if(valueAll){
-      switchToggleAll();
-    }
   };
 
+  useEffect(() => {
+    if (mode === "BLINK" || mode === "NORMAL") {
+      let status = "";
+      if (valueOne) {
+        status = valueOne ? "OFF" : "ON";
+        (async () => {
+          try {
+            await axios.post("/api/routes/manageSwitchOne", {
+              userId: user._id,
+              name: nameOne,
+              status: status,
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        })();
+      }
+      if (valueTwo) {
+        status = valueTwo ? "OFF" : "ON";
+        (async () => {
+          try {
+            await axios.post("/api/routes/manageSwitchTwo", {
+              userId: user._id,
+              name: nameTwo,
+              status: status,
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        })();
+      }
+      if (valueThree) {
+        status = valueThree ? "OFF" : "ON";
+        (async () => {
+          try {
+            await axios.post("/api/routes/manageSwitchThree", {
+              userId: user._id,
+              name: nameThree,
+              status: status,
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        })();
+      }
+      if (valueAll) {
+        status = valueAll ? "OFF" : "ON";
+        (async () => {
+          try {
+            await axios.post("/api/routes/manageAllSwitches", {
+              userId: user._id,
+              nameOne: nameOne,
+              nameTwo: nameTwo,
+              nameThree: nameThree,
+              status: status,
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        })();
+      }
+    }
+  }, [mode, valueOne, valueTwo, valueThree, valueAll]);
+  
+
+  
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
   
