@@ -95,6 +95,7 @@ router.post("/manageMotion", async (req, res) => {
 });
 
 //Save Temperature and humidity Range Data
+
 router.put("/saveRange", async (req, res) => {
   const body = {
     tempMax: parseInt(req.body.tempVal),
@@ -105,10 +106,13 @@ router.put("/saveRange", async (req, res) => {
     userId: req.body.userId,
   };
 
+
 //   const data = new RANGE(body);
+
 
   try {
     const dataToSave = await RANGE.findOneAndUpdate(
+    
       {userId: req.body.userId,},
       {
         $set: req.body,
@@ -120,6 +124,7 @@ router.put("/saveRange", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+
 
 //Post Method
 router.post("/post", (req, res) => {

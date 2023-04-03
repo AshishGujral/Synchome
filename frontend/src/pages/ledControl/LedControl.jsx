@@ -49,15 +49,91 @@ const LedControl = () => {
   const [valueThree, setValueThree] = useState(false);
 
   const [valueAll, setValueAll] = useState(false);
-
   const handleSelectChange = (event) => {
     setMode(event.target.value);
   };
 
+  useEffect(() => {
+    if (mode === "BLINK" || mode === "NORMAL") {
+      let status = "";
+      if (valueOne) {
+        status = valueOne ? "OFF" : "ON";
+        (async () => {
+          try {
+            await axios.post("/api/routes/manageSwitchOne", {
+              userId: user._id,
+              name: nameOne,
+              status: status,
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        })();
+      }
+      if (valueTwo) {
+        status = valueTwo ? "OFF" : "ON";
+        (async () => {
+          try {
+            await axios.post("/api/routes/manageSwitchTwo", {
+              userId: user._id,
+              name: nameTwo,
+              status: status,
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        })();
+      }
+      if (valueThree) {
+        status = valueThree ? "OFF" : "ON";
+        (async () => {
+          try {
+            await axios.post("/api/routes/manageSwitchThree", {
+              userId: user._id,
+              name: nameThree,
+              status: status,
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        })();
+      }
+      if (valueAll) {
+        status = valueAll ? "OFF" : "ON";
+        (async () => {
+          try {
+            await axios.post("/api/routes/manageAllSwitches", {
+              userId: user._id,
+              nameOne: nameOne,
+              nameTwo: nameTwo,
+              nameThree: nameThree,
+              status: status,
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        })();
+      }
+    }
+  }, [mode, valueOne, valueTwo, valueThree, valueAll]);
+  
+
+  
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
-
+  
     const status = valueOne ? "OFF" : "ON";
+    // check if any switch off call switchtoggleall
+       // check if any switch off call switchtoggleall
+       if(status == 'OFF' && valueAll== true){ 
+        switchToggleAll();
+        setValueTwo(true);
+        setValueThree(true);
+      }
+       // check if every switch turns on it will turn on the all switch 
+    if(valueThree==true && valueTwo==true && status=='ON'){
+      switchToggleAll();
+    }
 
     try {
       await axios.post("/api/routes/manageLed", {
@@ -76,7 +152,17 @@ const LedControl = () => {
     const status = valueTwo ? "OFF" : "ON";
 
     console.log("Button clicked", status, "two");
-
+    // check if any switch off call switchtoggleall
+       // check if any switch off call switchtoggleall
+       if(status == 'OFF' && valueAll== true){ 
+        switchToggleAll();
+        setValueOne(true);
+        setValueThree(true);
+      }
+       // check if every switch turns on it will turn on the all switch 
+    if(valueOne==true && valueThree==true && status=='ON'){
+      switchToggleAll();
+    }
     try {
       await axios.post("/api/routes/manageLed", {
         userId: user._id,
@@ -94,7 +180,17 @@ const LedControl = () => {
     const status = valueThree ? "OFF" : "ON";
 
     console.log("Button clicked", status, "three");
-
+    // check if any switch off call switchtoggleall
+    // check if any switch off call switchtoggleall
+    if(status == 'OFF' && valueAll== true){ 
+      switchToggleAll();
+      setValueOne(true);
+      setValueTwo(true);
+    }
+    // check if every switch turns on it will turn on the all switch 
+    if(valueOne==true && valueTwo==true && status=='ON'){
+      switchToggleAll();
+    }
     try {
       await axios.post("/api/routes/manageLed", {
         userId: user._id,
