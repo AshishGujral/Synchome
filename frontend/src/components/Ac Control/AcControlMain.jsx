@@ -10,7 +10,7 @@ import {
   FormControlLabel,
   FormLabel,
 } from "@mui/material";
-import React, { Component, useState } from "react";
+import React, { Component, useState, useContext } from "react";
 import ChartExpense from "../ChartExpense/ChartExpense";
 import FourColumnDiv from "../main/FourColumnDiv";
 import IconButton from "@mui/material/IconButton";
@@ -21,9 +21,11 @@ import HallIcon from "@mui/icons-material/Weekend";
 import BasementIcon from "@mui/icons-material/MeetingRoom";
 import "./AcControlMain.css";
 import { useEffect } from "react";
+import { Context } from "../../context/Context";
 
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
+import axios from "axios";
 
 const ContainerGrid = styled(Grid)`
   justify-content: center;
@@ -37,8 +39,10 @@ function valuetext(value) {
 const minDistance = 10;
 
 const AcControlMain = () => {
-  const [value2, setValue2] = React.useState([20, 37]);
-  const [value1, setValue1] = React.useState([20, 37]);
+  const { user } = useContext(Context);
+
+  const [tempValue, setTempValue] = React.useState([20, 37]);
+  const [humValue, setHumValue] = React.useState([20, 37]);
   const [fanSpeed, setFanSpeed] = React.useState("a");
 
   const [sensorData, setSensorData] = useState("");
@@ -48,12 +52,13 @@ const AcControlMain = () => {
   const [valueTwo, setValueTwo] = useState(false);
   const [nameThree, setNameThree] = useState("Basement");
   const [valueThree, setValueThree] = useState(false);
+
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
 
     const status = valueOne ? "OFF" : "ON";
-    console.log("Kitchen ",status);
-   /* try {
+    console.log("Kitchen ", status);
+    /* try {
       await axios.post("/api/routes/manageLed", {
         name: nameOne,
         mode: mode,
@@ -67,8 +72,8 @@ const AcControlMain = () => {
     setValueTwo(!valueTwo);
 
     const status = valueTwo ? "OFF" : "ON";
-    console.log("Hall ",status);
-   /* try {
+    console.log("Hall ", status);
+    /* try {
       await axios.post("/api/routes/manageLed", {
         name: nameOne,
         mode: mode,
@@ -82,8 +87,8 @@ const AcControlMain = () => {
     setValueThree(!valueThree);
 
     const status = valueThree ? "OFF" : "ON";
-    console.log("Basement ",status);
-   /* try {
+    console.log("Basement ", status);
+    /* try {
       await axios.post("/api/routes/manageLed", {
         name: nameOne,
         mode: mode,
@@ -94,6 +99,7 @@ const AcControlMain = () => {
     }*/
   };
 
+  // get temperature and humidity data from sensor
   useEffect(() => {
     const getTempAndHum = async () => {
       const res = await axios.post("/api/routes/manageDHT", {
@@ -104,11 +110,13 @@ const AcControlMain = () => {
     getTempAndHum();
   }, []);
 
+  // control fan speed
   const handleChange3 = (event) => {
     setFanSpeed(event.target.value);
   };
 
-  const handleChange2 = (event, newValue, activeThumb) => {
+  // slider helper functions
+  const handleTempChange = async (event, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) {
       return;
     }
@@ -116,16 +124,28 @@ const AcControlMain = () => {
     if (newValue[1] - newValue[0] < minDistance) {
       if (activeThumb === 0) {
         const clamped = Math.min(newValue[0], 100 - minDistance);
-        setValue2([clamped, clamped + minDistance]);
+        setTempValue([clamped, clamped + minDistance]);
       } else {
         const clamped = Math.max(newValue[1], minDistance);
-        setValue2([clamped - minDistance, clamped]);
+        setTempValue([clamped - minDistance, clamped]);
       }
     } else {
-      setValue2(newValue);
+      setTempValue(newValue);
+    }
+
+    try {
+      await axios.put("/api/routes/saveRange", {
+        tempMax: tempValue[1],
+        tempMin: tempValue[0],
+        humMin: humValue[0],
+        humMax: humValue[1],
+        userId: user._id,
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
-  const handleChange1 = (event, newValue, activeThumb) => {
+  const handleHumidityChange = async (event, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) {
       return;
     }
@@ -133,13 +153,25 @@ const AcControlMain = () => {
     if (newValue[1] - newValue[0] < minDistance) {
       if (activeThumb === 0) {
         const clamped = Math.min(newValue[0], 100 - minDistance);
-        setValue1([clamped, clamped + minDistance]);
+        setHumValue([clamped, clamped + minDistance]);
       } else {
         const clamped = Math.max(newValue[1], minDistance);
-        setValue1([clamped - minDistance, clamped]);
+        setHumValue([clamped - minDistance, clamped]);
       }
     } else {
-      setValue1(newValue);
+      setHumValue(newValue);
+    }
+
+    try {
+      await axios.put("/api/routes/saveRange", {
+        tempMax: tempValue[1],
+        tempMin: tempValue[0],
+        humMin: humValue[0],
+        humMax: humValue[1],
+        userId: user._id,
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
   {
@@ -147,11 +179,29 @@ const AcControlMain = () => {
       <div>
         <div className="M">AC Control</div>
         <div>
-        <FourColumnDiv
+          <FourColumnDiv
             switches={[
-              { name: nameOne, state: valueOne, icon:<KitchenIcon/>,handleChange: switchToggleOne, color:'#7a40f2'},
-              { name: nameTwo, state: valueTwo, icon:<HallIcon/>,handleChange: switchToggleTwo, color:'#7a40f2'},
-              { name: nameThree, state: valueThree, icon:<BasementIcon/>,handleChange: switchToggleThree, color:'#7a40f2'},
+              {
+                name: nameOne,
+                state: valueOne,
+                icon: <KitchenIcon />,
+                handleChange: switchToggleOne,
+                color: "#7a40f2",
+              },
+              {
+                name: nameTwo,
+                state: valueTwo,
+                icon: <HallIcon />,
+                handleChange: switchToggleTwo,
+                color: "#7a40f2",
+              },
+              {
+                name: nameThree,
+                state: valueThree,
+                icon: <BasementIcon />,
+                handleChange: switchToggleThree,
+                color: "#7a40f2",
+              },
             ]}
           />
         </div>
@@ -167,36 +217,40 @@ const AcControlMain = () => {
             Controls
             <div className="controls-content" id="controls">
               <Box sx={{ width: 300, display: "flex", gap: "1em" }}>
-                <Typography variant="h5">{value2[0]}</Typography>
+                <Typography variant="h5">{tempValue[0]}</Typography>
                 <Slider
                   getAriaLabel={() => "Minimum distance shift"}
-                  value={value2}
-                  onChange={handleChange2}
+                  value={tempValue}
+                  onChange={handleTempChange}
                   valueLabelDisplay="auto"
                   getAriaValueText={valuetext}
                   disableSwap
                 />
-                <Typography variant="h5">{value2[1]}</Typography>
+                <Typography variant="h5">{tempValue[1]}</Typography>
               </Box>
               <Box>
-                <Typography variant="h5">Indoor Temperature</Typography>
+                <Typography variant="h5">
+                  Indoor Temperature:{sensorData.temperature}
+                </Typography>
               </Box>
             </div>
             <div className="controls-content" id="controls">
               <Box sx={{ width: 300, display: "flex", gap: "1em" }}>
-                <Typography variant="h5">{value1[0]}</Typography>
+                <Typography variant="h5">{humValue[0]}</Typography>
                 <Slider
                   getAriaLabel={() => "Minimum distance shift"}
-                  value={value1}
-                  onChange={handleChange1}
+                  value={humValue}
+                  onChange={handleHumidityChange}
                   valueLabelDisplay="auto"
                   getAriaValueText={valuetext}
                   disableSwap
                 />
-                <Typography variant="h5">{value1[1]}</Typography>
+                <Typography variant="h5">{humValue[1]}</Typography>
               </Box>
               <Box>
-                <Typography variant="h5">Indoor Humidity</Typography>
+                <Typography variant="h5">
+                  Indoor Humidity: {sensorData.humidity}
+                </Typography>
               </Box>
             </div>
             <div className="controls-content" id="controls">
@@ -205,26 +259,25 @@ const AcControlMain = () => {
                   Fan Speed
                 </FormLabel>
                 <div className="radio__ac">
-                <label>One</label>
-                <Radio
-                  checked={fanSpeed === "a"}
-                  onChange={handleChange3}
-                  value="a"
-                  name="radio-buttons"
-                  inputProps={{ "aria-label": "A" }}
-                />
+                  <label>One</label>
+                  <Radio
+                    checked={fanSpeed === "a"}
+                    onChange={handleChange3}
+                    value="a"
+                    name="radio-buttons"
+                    inputProps={{ "aria-label": "A" }}
+                  />
                 </div>
-             <div className="radio__ac">
-              <label>Two</label>
-              <Radio
-                  checked={fanSpeed === "b"}
-                  onChange={handleChange3}
-                  value="b"
-                  name="radio-buttons"
-                  inputProps={{ "aria-label": "B" }}
-                />
-             </div>
-          
+                <div className="radio__ac">
+                  <label>Two</label>
+                  <Radio
+                    checked={fanSpeed === "b"}
+                    onChange={handleChange3}
+                    value="b"
+                    name="radio-buttons"
+                    inputProps={{ "aria-label": "B" }}
+                  />
+                </div>
               </Box>
             </div>
           </div>
