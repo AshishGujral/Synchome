@@ -7,7 +7,7 @@ import SwitchContainer from "../../components/Switch/SwitchContainer";
 import LightIcon from "@mui/icons-material/TipsAndUpdates";
 import "./ledcontrol.css";
 import FourColumnDiv from "../../components/main/FourColumnDiv";
-
+import React, { useRef } from 'react';
 import {
   Grid,
   styled,
@@ -37,7 +37,7 @@ const LedControl = () => {
   const { user } = useContext(Context);
 
   const [mode, setMode] = useState("NORMAL");
-
+  const [previousMode, setPreviousMode] = useState(mode);
   const [nameOne, setNameOne] = useState("red");
   const [valueOne, setValueOne] = useState(false);
 
@@ -51,9 +51,13 @@ const LedControl = () => {
   const handleSelectChange = (event) => {
     setMode(event.target.value);
   };
-
+  const mountedRef = useRef(false);
   useEffect(() => {
-    if (mode === "BLINK" || mode === "NORMAL") {
+    if (mountedRef.current && (
+      (previousMode === "BLINK" && mode === "NORMAL") ||
+      (previousMode === "NORMAL" && mode === "BLINK")
+    )) {
+      console.log("mode", mode);
       let status = "";
       if (valueOne) {
         status = valueOne ? "OFF" : "ON";
@@ -116,6 +120,8 @@ const LedControl = () => {
         })();
       }
     }
+    setPreviousMode(mode);
+    mountedRef.current = true;
   }, [mode, valueOne, valueTwo, valueThree, valueAll]);
 
   const switchToggleOne = async () => {
