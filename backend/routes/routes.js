@@ -16,7 +16,7 @@ router.post('/manageLed', async (req, res)=>{
         status: req.body.status
     }
 
-    const response = await fetch('http://10.0.0.48:80/handleLED', {
+    const response = await fetch('http://192.168.147.28/handleLED', {
         method: 'post',
         body: JSON.stringify(body),
         headers: {'Content-Type': 'application/json'}
@@ -46,7 +46,7 @@ router.post('/manageLed', async (req, res)=>{
 //Manage DHT(Temperature and Humidity)
 router.post("/manageDHT", async (req, res)=>{
 
-    const response = await fetch('http://10.0.0.48:80/handleDHT');
+    const response = await fetch('http://192.168.147.28/handleDHT');
 
     const responseData = await response.json();
 
@@ -76,7 +76,7 @@ router.post("/manageMotion", async(req, res)=>{
         status: req.body.status
     }
 
-    const response = await fetch('http://10.0.0.48:80/handleMotion', {
+    const response = await fetch('http://192.168.147.28/handleMotion', {
         method: 'post',
         body: JSON.stringify(body),
         headers: {'Content-Type': 'application/json'}
