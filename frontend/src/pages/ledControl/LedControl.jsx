@@ -7,7 +7,7 @@ import SwitchContainer from "../../components/Switch/SwitchContainer";
 import LightIcon from "@mui/icons-material/TipsAndUpdates";
 import "./ledcontrol.css";
 import FourColumnDiv from "../../components/main/FourColumnDiv";
-import React, { useRef } from 'react';
+import React, { useRef } from "react";
 import {
   Grid,
   styled,
@@ -51,16 +51,19 @@ const LedControl = () => {
   const handleSelectChange = (event) => {
     setMode(event.target.value);
   };
+
+  // using useref hook to track whether the component is mounted or not
   const mountedRef = useRef(false);
   useEffect(() => {
-    if (mountedRef.current && (
-      (previousMode === "BLINK" && mode === "NORMAL") ||
-      (previousMode === "NORMAL" && mode === "BLINK")
-    )) {
-      console.log("mode", mode);
+    // check if the component is mounted and other condition
+    if (
+      mountedRef.current &&
+      ((previousMode === "BLINK" && mode === "NORMAL") ||
+        (previousMode === "NORMAL" && mode === "BLINK"))
+    ) {
       let status = "";
       if (valueOne) {
-        status = valueOne ? "OFF" : "ON";
+        status = "ON";
         (async () => {
           try {
             await axios.post("/api/routes/manageLed", {
@@ -75,7 +78,7 @@ const LedControl = () => {
         })();
       }
       if (valueTwo) {
-        status = valueTwo ? "OFF" : "ON";
+        status = "ON";
         (async () => {
           try {
             await axios.post("/api/routes/manageLed", {
@@ -90,7 +93,7 @@ const LedControl = () => {
         })();
       }
       if (valueThree) {
-        status = valueThree ? "OFF" : "ON";
+        status = "ON";
         (async () => {
           try {
             await axios.post("/api/routes/manageLed", {
@@ -105,7 +108,8 @@ const LedControl = () => {
         })();
       }
       if (valueAll) {
-        status = valueAll ? "OFF" : "ON";
+        status = "ON";
+        console.log("blue", status);
         (async () => {
           try {
             await axios.post("/api/routes/manageLed", {
@@ -128,14 +132,13 @@ const LedControl = () => {
     setValueOne(!valueOne);
 
     const status = valueOne ? "OFF" : "ON";
-    // check if any switch off call switchtoggleall
-    // check if any switch off call switchtoggleall
+    // Check the status of the switch and turn off all switche tab if it is "OFF"
     if (status == "OFF" && valueAll == true) {
-      switchToggleAll();
+      setValueAll(false);
       setValueTwo(true);
       setValueThree(true);
     }
-    // check if every switch turns on it will turn on the all switch
+    // check if every switch turns on
     if (valueThree == true && valueTwo == true && status == "ON") {
       switchToggleAll();
     }
@@ -157,10 +160,9 @@ const LedControl = () => {
     const status = valueTwo ? "OFF" : "ON";
 
     console.log("Button clicked", status, "two");
-    // check if any switch off call switchtoggleall
-    // check if any switch off call switchtoggleall
+    // Check the status of the switch and turn off all switche tab if it is "OFF"
     if (status == "OFF" && valueAll == true) {
-      switchToggleAll();
+      setValueAll(false);
       setValueOne(true);
       setValueThree(true);
     }
@@ -185,10 +187,9 @@ const LedControl = () => {
     const status = valueThree ? "OFF" : "ON";
 
     console.log("Button clicked", status, "three");
-    // check if any switch off call switchtoggleall
-    // check if any switch off call switchtoggleall
+    // Check the status of the switch and turn off all switche tab if it is "OFF"
     if (status == "OFF" && valueAll == true) {
-      switchToggleAll();
+      setValueAll(false);
       setValueOne(true);
       setValueTwo(true);
     }
