@@ -5,8 +5,10 @@ import LED from "../models/Led.js";
 import DHT from "../models/DHT.js";
 import MOTION from "../models/Motion.js";
 import RANGE from "../models/Range.js";
+import FAN from "../models/Fan.js";
 
 const router = express.Router();
+const espIP = "http://192.168.147.28";
 
 //Manage LED
 router.post("/manageLed", async (req, res) => {
@@ -16,7 +18,7 @@ router.post("/manageLed", async (req, res) => {
     status: req.body.status,
   };
 
-  const response = await fetch("http://192.168.147.28/handleLED", {
+  const response = await fetch(`${espIP}/handleLED`, {
     method: "post",
     body: JSON.stringify(body),
     headers: { "Content-Type": "application/json" },
@@ -43,7 +45,7 @@ router.post("/manageLed", async (req, res) => {
 
 //Manage DHT(Temperature and Humidity)
 router.post("/manageDHT", async (req, res) => {
-  const response = await fetch("http://192.168.147.28/handleDHT");
+  const response = await fetch(`${espIP}/handleDHT`);
 
   const responseData = await response.json();
 
@@ -64,13 +66,44 @@ router.post("/manageDHT", async (req, res) => {
   }
 });
 
+//Manage Fan
+router.post("/manageFan", async(req, res) => {
+
+  const body = {
+    speed: req.body.speed
+  };
+
+  const response = await fetch(`${espIP}/handleFan`, {
+    method: "post",
+    body: JSON.stringify(body),
+    headers: {"Content-Type": "application/json"}
+  });
+
+  const responseData = await response.json();
+
+  if (responseData.success == "true") {
+    const data = new FAN({
+      time: Date.now(),
+      speed: req.body.speed,
+      userId: req.body.userId,
+    });
+
+    try {
+      const dataToSave = await data.save();
+      res.status(200).json(dataToSave);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+});
+
 //Manage Motion
 router.post("/manageMotion", async (req, res) => {
   const body = {
     status: req.body.status,
   };
 
-  const response = await fetch("http://192.168.147.28/handleMotion", {
+  const response = await fetch(`${espIP}/handleMotion`, {
     method: "post",
     body: JSON.stringify(body),
     headers: { "Content-Type": "application/json" },
