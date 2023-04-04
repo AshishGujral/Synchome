@@ -12,6 +12,10 @@ const FanSchema = new mongoose.Schema({
     speed:{
         required: true,
         type: Number
+    },
+    status:{
+        required: true,
+        type: String
     }
 });
 

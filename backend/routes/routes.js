@@ -70,7 +70,8 @@ router.post("/manageDHT", async (req, res) => {
 router.post("/manageFan", async(req, res) => {
 
   const body = {
-    speed: req.body.speed
+    speed: req.body.speed,
+    status: req.body.status
   };
 
   const response = await fetch(`${espIP}/handleFan`, {
@@ -85,6 +86,7 @@ router.post("/manageFan", async(req, res) => {
     const data = new FAN({
       time: Date.now(),
       speed: req.body.speed,
+      status: req.body.status,
       userId: req.body.userId,
     });
 
