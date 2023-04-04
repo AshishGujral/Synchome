@@ -100,14 +100,23 @@ const AcControlMain = () => {
   };
 
   // get temperature and humidity data from sensor
+  const getTempAndHum = async () => {
+    const res = await axios.post("/api/routes/manageDHT", {
+      userId: user._id,
+    });
+    setSensorData(res.data);
+  };
   useEffect(() => {
-    const getTempAndHum = async () => {
-      const res = await axios.post("/api/routes/manageDHT", {
-        userId: user._id,
-      });
-      setSensorData(res.data);
-    };
     getTempAndHum();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      console.log("Logs every 10 seconds");
+      getTempAndHum();
+    }, 10000);
+
+    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
   }, []);
 
   // control fan speed
