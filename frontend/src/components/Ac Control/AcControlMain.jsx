@@ -55,7 +55,7 @@ const AcControlMain = () => {
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
 
-    const status = valueOne ? "OFF" : "ON";
+    const status = valueOne ? "ON" : "OFF";
     setFanStatus(status);
     console.log("Kitchen ", status);
      callFan();
@@ -94,9 +94,11 @@ const AcControlMain = () => {
       ) {
         setFanStatus("ON");
         callFan();
+  setValueOne(true)
       } else {
         setFanStatus("OFF");
         callFan();
+  setValueOne(false)
       }
     }, 10000);
 
@@ -105,7 +107,7 @@ const AcControlMain = () => {
 
   // control fan speed
   const handleChange3 = (event) => {
-    setFanSpeed(event.target.value);
+    setFanSpeed(parseInt(event.target.value));
   };
 
   // slider helper functions
