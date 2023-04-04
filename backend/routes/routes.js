@@ -74,7 +74,7 @@ router.post("/manageFan", async(req, res) => {
     status: req.body.status
   };
 
-  const response = await fetch(`${espIP}/handleFan`, {
+  const response = await fetch(`${espIP}/handleMotor`, {
     method: "post",
     body: JSON.stringify(body),
     headers: {"Content-Type": "application/json"}

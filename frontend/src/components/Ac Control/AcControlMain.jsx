@@ -66,44 +66,44 @@ const AcControlMain = () => {
    await axios.post("/api/routes/manageFan", {
       userId: user._id,
       speed: fanSpeed,
-      status: fanStatus,
+      status: "ON",
     });
   };
 
   // get temperature and humidity data from sensor
-  const getTempAndHum = async () => {
-    const res = await axios.post("/api/routes/manageDHT", {
-      userId: user._id,
-    });
-    setSensorData(res.data);
-  };
+  // const getTempAndHum = async () => {
+  //   const res = await axios.post("/api/routes/manageDHT", {
+  //     userId: user._id,
+  //   });
+  //   setSensorData(res.data);
+  // };
 
-  useEffect(() => {
-    getTempAndHum();
-  }, []);
+  // useEffect(() => {
+  //   getTempAndHum();
+  // }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      console.log("Logs every 10 seconds");
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     console.log("Logs every 10 seconds");
 
-      getTempAndHum();
+  //     getTempAndHum();
 
-      if (
-        tempValue[1] >= sensorData.temperature ||
-        humValue[1] >= sensorData.humidity
-      ) {
-        setFanStatus("ON");
-        callFan();
-  setValueOne(true)
-      } else {
-        setFanStatus("OFF");
-        callFan();
-  setValueOne(false)
-      }
-    }, 10000);
+  //     if (
+  //       tempValue[1] >= sensorData.temperature ||
+  //       humValue[1] >= sensorData.humidity
+  //     ) {
+  //       setFanStatus("ON");
+  //       callFan();
+  // setValueOne(true)
+  //     } else {
+  //       setFanStatus("OFF");
+  //       callFan();
+  // setValueOne(false)
+  //     }
+  //   }, 10000);
 
-    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
-  }, []);
+  //   return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+  // }, []);
 
   // control fan speed
   const handleChange3 = (event) => {
