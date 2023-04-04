@@ -43,60 +43,31 @@ const AcControlMain = () => {
 
   const [tempValue, setTempValue] = React.useState([20, 37]);
   const [humValue, setHumValue] = React.useState([20, 37]);
-  const [fanSpeed, setFanSpeed] = React.useState("a");
+
+  const [fanSpeed, setFanSpeed] = React.useState(1);
+  const [fanStatus, setFanStatus] = useState("OFF");
 
   const [sensorData, setSensorData] = useState("");
   const [nameOne, setNameOne] = useState("Kitchen");
   const [valueOne, setValueOne] = useState(false);
-  const [nameTwo, setNameTwo] = useState("Hall");
-  const [valueTwo, setValueTwo] = useState(false);
-  const [nameThree, setNameThree] = useState("Basement");
-  const [valueThree, setValueThree] = useState(false);
+ 
 
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
 
     const status = valueOne ? "OFF" : "ON";
+    setFanStatus(status);
     console.log("Kitchen ", status);
-    /* try {
-      await axios.post("/api/routes/manageLed", {
-        name: nameOne,
-        mode: mode,
-        status: status,
-      });
-    } catch (err) {
-      console.log(err);
-    }*/
+     callFan();
   };
-  const switchToggleTwo = async () => {
-    setValueTwo(!valueTwo);
 
-    const status = valueTwo ? "OFF" : "ON";
-    console.log("Hall ", status);
-    /* try {
-      await axios.post("/api/routes/manageLed", {
-        name: nameOne,
-        mode: mode,
-        status: status,
-      });
-    } catch (err) {
-      console.log(err);
-    }*/
-  };
-  const switchToggleThree = async () => {
-    setValueThree(!valueThree);
-
-    const status = valueThree ? "OFF" : "ON";
-    console.log("Basement ", status);
-    /* try {
-      await axios.post("/api/routes/manageLed", {
-        name: nameOne,
-        mode: mode,
-        status: status,
-      });
-    } catch (err) {
-      console.log(err);
-    }*/
+  // turn fan on/off
+  const callFan = async () => {
+   await axios.post("/api/routes/manageFan", {
+      userId: user._id,
+      speed: fanSpeed,
+      status: fanStatus,
+    });
   };
 
   // get temperature and humidity data from sensor
@@ -106,6 +77,7 @@ const AcControlMain = () => {
     });
     setSensorData(res.data);
   };
+
   useEffect(() => {
     getTempAndHum();
   }, []);
@@ -113,7 +85,19 @@ const AcControlMain = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       console.log("Logs every 10 seconds");
+
       getTempAndHum();
+
+      if (
+        tempValue[1] >= sensorData.temperature ||
+        humValue[1] >= sensorData.humidity
+      ) {
+        setFanStatus("ON");
+        callFan();
+      } else {
+        setFanStatus("OFF");
+        callFan();
+      }
     }, 10000);
 
     return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
@@ -196,21 +180,7 @@ const AcControlMain = () => {
                 icon: <KitchenIcon />,
                 handleChange: switchToggleOne,
                 color: "#7a40f2",
-              },
-              {
-                name: nameTwo,
-                state: valueTwo,
-                icon: <HallIcon />,
-                handleChange: switchToggleTwo,
-                color: "#7a40f2",
-              },
-              {
-                name: nameThree,
-                state: valueThree,
-                icon: <BasementIcon />,
-                handleChange: switchToggleThree,
-                color: "#7a40f2",
-              },
+              }
             ]}
           />
         </div>
@@ -270,9 +240,9 @@ const AcControlMain = () => {
                 <div className="radio__ac">
                   <label>One</label>
                   <Radio
-                    checked={fanSpeed === "a"}
+                    checked={fanSpeed == 1}
                     onChange={handleChange3}
-                    value="a"
+                    value={1}
                     name="radio-buttons"
                     inputProps={{ "aria-label": "A" }}
                   />
@@ -280,11 +250,21 @@ const AcControlMain = () => {
                 <div className="radio__ac">
                   <label>Two</label>
                   <Radio
-                    checked={fanSpeed === "b"}
+                    checked={fanSpeed == 2}
                     onChange={handleChange3}
-                    value="b"
+                    value={2}
                     name="radio-buttons"
                     inputProps={{ "aria-label": "B" }}
+                  />
+                </div>
+                <div className="radio__ac">
+                  <label>Three</label>
+                  <Radio
+                    checked={fanSpeed == 3}
+                    onChange={handleChange3}
+                    value={3}
+                    name="radio-buttons"
+                    inputProps={{ "aria-label": "C" }}
                   />
                 </div>
               </Box>
