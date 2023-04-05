@@ -41,8 +41,8 @@ const minDistance = 10;
 const AcControlMain = () => {
   const { user } = useContext(Context);
 
-  const [tempValue, setTempValue] = React.useState([20, 37]);
-  const [humValue, setHumValue] = React.useState([20, 37]);
+  const [tempValue, setTempValue] = React.useState([19, 29]);
+  const [humValue, setHumValue] = React.useState([19, 29]);
 
   const [fanSpeed, setFanSpeed] = React.useState(1);
   const [fanStatus, setFanStatus] = useState("OFF");
@@ -50,20 +50,28 @@ const AcControlMain = () => {
   const [sensorData, setSensorData] = useState("");
   const [nameOne, setNameOne] = useState("Kitchen");
   const [valueOne, setValueOne] = useState(false);
- 
 
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
 
-    const status = valueOne ? "ON" : "OFF";
-    setFanStatus(status);
-    console.log("Kitchen ", status);
-    await callFan();
+    const status = valueOne ? "OFF" : "ON";
+    // setFanStatus(status);
+    // console.log("Kitchen ", status);
+    // await callFan();
+    try {
+      await axios.post("/api/routes/manageFan", {
+        userId: user._id,
+        speed: fanSpeed,
+        status: status,
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   // turn fan on/off
   const callFan = async () => {
-   await axios.post("/api/routes/manageFan", {
+    await axios.post("/api/routes/manageFan", {
       userId: user._id,
       speed: fanSpeed,
       status: fanStatus,
@@ -71,39 +79,69 @@ const AcControlMain = () => {
   };
 
   // get temperature and humidity data from sensor
-  // const getTempAndHum = async () => {
-  //   const res = await axios.post("/api/routes/manageDHT", {
-  //     userId: user._id,
-  //   });
-  //   setSensorData(res.data);
-  // };
+  const getTempAndHum = async () => {
+    const res = await axios.post("/api/routes/manageDHT", {
+      userId: user._id,
+    });
+    setSensorData(res.data);
+  };
 
-  // useEffect(() => {
-  //   getTempAndHum();
-  // }, []);
+  useEffect(() => {
+    getTempAndHum();
+  }, []);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     console.log("Logs every 10 seconds");
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      console.log("Logs every 10 seconds");
+      console.log("temp val" + tempValue[1]);
+      console.log("hum val" + humValue[1]);
 
-  //     getTempAndHum();
+      // await getTempAndHum();
+      try {
+        const res = await axios.post("/api/routes/manageDHT", {
+          userId: user._id,
+        });
+        setSensorData(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+      if (
+        tempValue[1] >= sensorData.temperature ||
+        humValue[1] >= sensorData.humidity
+      ) {
+        console.log("calling if fan api");
+        setFanStatus("ON");
+        // await callFan();
+        try {
+          await axios.post("/api/routes/manageFan", {
+            userId: user._id,
+            speed: fanSpeed,
+            status: "ON",
+          });
+        } catch (err) {
+          console.log(err);
+        }
+        setValueOne(true);
+      } else {
+        // setFanStatus("OFF");
+        // await callFan();
+        console.log("calling else fan api");
 
-  //     if (
-  //       tempValue[1] >= sensorData.temperature ||
-  //       humValue[1] >= sensorData.humidity
-  //     ) {
-  //       setFanStatus("ON");
-  //       callFan();
-  // setValueOne(true)
-  //     } else {
-  //       setFanStatus("OFF");
-  //       callFan();
-  // setValueOne(false)
-  //     }
-  //   }, 10000);
+        try {
+          await axios.post("/api/routes/manageFan", {
+            userId: user._id,
+            speed: fanSpeed,
+            status: "OFF",
+          });
+        } catch (err) {
+          console.log(err);
+        }
+        setValueOne(false);
+      }
+    }, 10000);
 
-  //   return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
-  // }, []);
+    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+  }, [tempValue[1], humValue[1]]);
 
   // control fan speed
   const handleChange3 = (event) => {
@@ -182,7 +220,7 @@ const AcControlMain = () => {
                 icon: <KitchenIcon />,
                 handleChange: switchToggleOne,
                 color: "#7a40f2",
-              }
+              },
             ]}
           />
         </div>
