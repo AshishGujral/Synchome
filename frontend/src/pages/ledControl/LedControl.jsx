@@ -79,7 +79,11 @@ const loadSwitchState = () => {
   } else {
     setValueAll(false);
   }
-  setMode(localStorage.getItem('mode'));
+  if(useRef){
+
+    setMode(localStorage.getItem('mode'));
+  }
+
 }
 // get data from localstorage when page reloads
 window.addEventListener('load', loadSwitchState);
@@ -102,6 +106,7 @@ useEffect(() => {
         (previousMode === "NORMAL" && mode === "BLINK"))
     ) {
       localStorage.setItem('mode', mode);
+      console.log("mode",mode);
       let status = "";
       if (valueAll) {
         status = "ON";
