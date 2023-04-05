@@ -58,7 +58,7 @@ const AcControlMain = () => {
     const status = valueOne ? "ON" : "OFF";
     setFanStatus(status);
     console.log("Kitchen ", status);
-     callFan();
+    await callFan();
   };
 
   // turn fan on/off
@@ -66,7 +66,7 @@ const AcControlMain = () => {
    await axios.post("/api/routes/manageFan", {
       userId: user._id,
       speed: fanSpeed,
-      status: "ON",
+      status: fanStatus,
     });
   };
 
