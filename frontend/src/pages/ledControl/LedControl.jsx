@@ -79,8 +79,7 @@ const loadSwitchState = () => {
   } else {
     setValueAll(false);
   }
-  if(useRef){
-
+  if(!useRef){
     setMode(localStorage.getItem('mode'));
   }
 
