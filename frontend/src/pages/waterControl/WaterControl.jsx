@@ -151,7 +151,7 @@ const WaterControl = () => {
                     </Box>
                     <Box>
                       <Typography variant="h5">
-                        Indoor Temperature:{sensorData.temperature}
+                        Humidity:{sensorData.humidity}
                       </Typography>
                     </Box>
                   </div>

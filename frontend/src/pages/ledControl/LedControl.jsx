@@ -51,10 +51,46 @@ const LedControl = () => {
   const handleSelectChange = (event) => {
     setMode(event.target.value);
   };
+// Load the state of the switch from localStorage on page load
+const loadSwitchState = () => {
+  const switchOneStatus =localStorage.getItem('switchOne');
+  const switchTwoStatus =localStorage.getItem('switchTwo');
+  const switchThreeStatus =localStorage.getItem('switchThree');
+  const switchAllStatus =localStorage.getItem('switchAll');
+  if (switchOneStatus === 'ON') {
+    setValueOne(true);
+  } else {
+    setValueOne(false);
+  }
+  if(switchTwoStatus == 'ON'){
+    setValueTwo(true);
+  } else {
+    setValueAll(false);
+   
+  }
+  if(switchThreeStatus == 'ON'){
+    setValueThree(true);
+  } else {
+    setValueThree(false);
+  }
+  if(switchAllStatus == 'ON'){
+    setValueAll(true);
+  } else {
+    setValueAll(false);
+  }
+}
+// get data from localstorage when page reloads
+window.addEventListener('load', loadSwitchState);
+
+
+useEffect(() => {
+  loadSwitchState();
+}, []);
 
   // using useref hook to track whether the component is mounted or not
   const mountedRef = useRef(false);
   useEffect(() => {
+
     // check if the component is mounted and other condition
     if (
       mountedRef.current &&
@@ -62,51 +98,6 @@ const LedControl = () => {
         (previousMode === "NORMAL" && mode === "BLINK"))
     ) {
       let status = "";
-      if (valueOne) {
-        status = "ON";
-        (async () => {
-          try {
-            await axios.post("/api/routes/manageLed", {
-              userId: user._id,
-              name: nameOne,
-              mode: mode,
-              status: status,
-            });
-          } catch (err) {
-            console.log(err);
-          }
-        })();
-      }
-      if (valueTwo) {
-        status = "ON";
-        (async () => {
-          try {
-            await axios.post("/api/routes/manageLed", {
-              userId: user._id,
-              name: nameTwo,
-              mode: mode,
-              status: status,
-            });
-          } catch (err) {
-            console.log(err);
-          }
-        })();
-      }
-      if (valueThree) {
-        status = "ON";
-        (async () => {
-          try {
-            await axios.post("/api/routes/manageLed", {
-              userId: user._id,
-              name: nameThree,
-              mode: mode,
-              status: status,
-            });
-          } catch (err) {
-            console.log(err);
-          }
-        })();
-      }
       if (valueAll) {
         status = "ON";
         console.log("blue", status);
@@ -123,6 +114,53 @@ const LedControl = () => {
           }
         })();
       }
+      else{
+        if (valueOne) {
+          status = "ON";
+          (async () => {
+            try {
+              await axios.post("/api/routes/manageLed", {
+                userId: user._id,
+                name: nameOne,
+                mode: mode,
+                status: status,
+              });
+            } catch (err) {
+              console.log(err);
+            }
+          })();
+        }
+        if (valueTwo) {
+          status = "ON";
+          (async () => {
+            try {
+              await axios.post("/api/routes/manageLed", {
+                userId: user._id,
+                name: nameTwo,
+                mode: mode,
+                status: status,
+              });
+            } catch (err) {
+              console.log(err);
+            }
+          })();
+        }
+        if (valueThree) {
+          status = "ON";
+          (async () => {
+            try {
+              await axios.post("/api/routes/manageLed", {
+                userId: user._id,
+                name: nameThree,
+                mode: mode,
+                status: status,
+              });
+            } catch (err) {
+              console.log(err);
+            }
+          })();
+        }
+      }
     }
     setPreviousMode(mode);
     mountedRef.current = true;
@@ -137,19 +175,23 @@ const LedControl = () => {
       setValueAll(false);
       setValueTwo(true);
       setValueThree(true);
+      localStorage.setItem('switchOne', status);
+      localStorage.setItem('switchAll', status);
     }
+    
     // check if every switch turns on
     if (valueThree == true && valueTwo == true && status == "ON") {
       switchToggleAll();
     }
-
     try {
+     localStorage.setItem('switchOne', status);
       await axios.post("/api/routes/manageLed", {
         userId: user._id,
         name: nameOne,
         mode: mode,
         status: status,
       });
+     
     } catch (err) {
       console.log(err);
     }
@@ -165,18 +207,22 @@ const LedControl = () => {
       setValueAll(false);
       setValueOne(true);
       setValueThree(true);
+      localStorage.setItem('switchTwo', status);
+      localStorage.setItem('switchAll', status);
     }
     // check if every switch turns on it will turn on the all switch
     if (valueOne == true && valueThree == true && status == "ON") {
       switchToggleAll();
     }
     try {
+      localStorage.setItem('switchTwo', status);
       await axios.post("/api/routes/manageLed", {
         userId: user._id,
         name: nameTwo,
         mode: mode,
         status: status,
       });
+      
     } catch (err) {
       console.log(err);
     }
@@ -192,12 +238,16 @@ const LedControl = () => {
       setValueAll(false);
       setValueOne(true);
       setValueTwo(true);
+      localStorage.setItem('switchThree', status);
+      localStorage.setItem('switchAll', status);
     }
+
     // check if every switch turns on it will turn on the all switch
     if (valueOne == true && valueTwo == true && status == "ON") {
       switchToggleAll();
     }
     try {
+      localStorage.setItem('switchThree', status);
       await axios.post("/api/routes/manageLed", {
         userId: user._id,
         name: nameThree,
@@ -216,10 +266,12 @@ const LedControl = () => {
     setValueAll(!valueAll);
 
     const status = valueAll ? "OFF" : "ON";
-
+    localStorage.setItem('switchOne', status);
+    localStorage.setItem('switchTwo', status);
+    localStorage.setItem('switchThree', status);
     console.log("Button clicked", status, "All");
-
     try {
+      localStorage.setItem('switchAll', status);
       await axios.post("/api/routes/manageLed", {
         userId: user._id,
         name: "all",
