@@ -95,62 +95,62 @@ const AcControlMain = () => {
   }
 
   useEffect(() => {
-    // getTempAndHum(); // from sensor
+    getTempAndHum(); // from sensor
     setTempAndHumRange(); // from DB
   }, []);
 
-  // useEffect(() => {
-  //   const interval = setInterval(async () => {
-  //     console.log("Logs every 10 seconds");
-  //     console.log("temp val" + tempValue[1]);
-  //     console.log("hum val" + humValue[1]);
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      console.log("Logs every 10 seconds");
+      console.log("temp val" + tempValue[1]);
+      console.log("hum val" + humValue[1]);
 
-  //     // await getTempAndHum();
-  //     try {
-  //       const res = await axios.post("/api/routes/manageDHT", {
-  //         userId: user._id,
-  //       });
-  //       setSensorData(res.data);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //     if (
-  //       tempValue[1] <= parseInt(sensorData.temperature) ||
-  //       humValue[1] <= parseInt(sensorData.humidity)
-  //     ) {
-  //       console.log("calling if fan api");
-  //       setFanStatus("ON");
-  //       // await callFan();
-  //       try {
-  //         await axios.post("/api/routes/manageFan", {
-  //           userId: user._id,
-  //           speed: fanSpeed,
-  //           status: "ON",
-  //         });
-  //       } catch (err) {
-  //         console.log(err);
-  //       }
-  //       setValueOne(true);
-  //     } else {
-  //       // setFanStatus("OFF");
-  //       // await callFan();
-  //       console.log("calling else fan api");
+      // await getTempAndHum();
+      try {
+        const res = await axios.post("/api/routes/manageDHT", {
+          userId: user._id,
+        });
+        setSensorData(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+      if (
+        tempValue[1] <= parseInt(sensorData.temperature) ||
+        humValue[1] <= parseInt(sensorData.humidity)
+      ) {
+        console.log("calling if fan api");
+        setFanStatus("ON");
+        // await callFan();
+        try {
+          await axios.post("/api/routes/manageFan", {
+            userId: user._id,
+            speed: fanSpeed,
+            status: "ON",
+          });
+        } catch (err) {
+          console.log(err);
+        }
+        setValueOne(true);
+      } else {
+        // setFanStatus("OFF");
+        // await callFan();
+        console.log("calling else fan api");
 
-  //       try {
-  //         await axios.post("/api/routes/manageFan", {
-  //           userId: user._id,
-  //           speed: fanSpeed,
-  //           status: "OFF",
-  //         });
-  //       } catch (err) {
-  //         console.log(err);
-  //       }
-  //       setValueOne(false);
-  //     }
-  //   }, 10000);
+        try {
+          await axios.post("/api/routes/manageFan", {
+            userId: user._id,
+            speed: fanSpeed,
+            status: "OFF",
+          });
+        } catch (err) {
+          console.log(err);
+        }
+        setValueOne(false);
+      }
+    }, 10000);
 
-  //   return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
-  // }, [tempValue[1], humValue[1]]);
+    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+  }, [tempValue[1], humValue[1]]);
 
   // control fan speed
   const handleChange3 = (event) => {
