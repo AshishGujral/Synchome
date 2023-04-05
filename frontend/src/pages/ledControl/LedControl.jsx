@@ -48,6 +48,7 @@ const LedControl = () => {
   const [valueThree, setValueThree] = useState(false);
 
   const [valueAll, setValueAll] = useState(false);
+
   const handleSelectChange = (event) => {
     setMode(event.target.value);
   };
@@ -78,13 +79,16 @@ const loadSwitchState = () => {
   } else {
     setValueAll(false);
   }
+  setMode(localStorage.getItem('mode'));
 }
 // get data from localstorage when page reloads
 window.addEventListener('load', loadSwitchState);
 
 
 useEffect(() => {
+
   loadSwitchState();
+  
 }, []);
 
   // using useref hook to track whether the component is mounted or not
@@ -97,6 +101,7 @@ useEffect(() => {
       ((previousMode === "BLINK" && mode === "NORMAL") ||
         (previousMode === "NORMAL" && mode === "BLINK"))
     ) {
+      localStorage.setItem('mode', mode);
       let status = "";
       if (valueAll) {
         status = "ON";
