@@ -67,17 +67,16 @@ router.post("/manageDHT", async (req, res) => {
 });
 
 //Manage Fan
-router.post("/manageFan", async(req, res) => {
-
+router.post("/manageFan", async (req, res) => {
   const body = {
     speed: req.body.speed,
-    status: req.body.status
+    status: req.body.status,
   };
 
   const response = await fetch(`${espIP}/handleMotor`, {
     method: "post",
     body: JSON.stringify(body),
-    headers: {"Content-Type": "application/json"}
+    headers: { "Content-Type": "application/json" },
   });
 
   const responseData = await response.json();
@@ -129,7 +128,7 @@ router.post("/manageMotion", async (req, res) => {
   }
 });
 
-//Save Temperature and humidity Range Data
+//Save and update Temperature and humidity Range Data
 
 router.put("/saveRange", async (req, res) => {
   const body = {
@@ -141,14 +140,9 @@ router.put("/saveRange", async (req, res) => {
     userId: req.body.userId,
   };
 
-
-//   const data = new RANGE(body);
-
-
   try {
     const dataToSave = await RANGE.findOneAndUpdate(
-    
-      {userId: req.body.userId,},
+      { userId: req.body.userId },
       {
         $set: req.body,
       },
@@ -160,6 +154,15 @@ router.put("/saveRange", async (req, res) => {
   }
 });
 
+// get Temperature and humidity Range Data
+router.get("/saveRange", async (req, res) => {
+  try {
+    const data = await RANGE.findOne();
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
 //Post Method
 router.post("/post", (req, res) => {
