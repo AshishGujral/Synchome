@@ -51,6 +51,8 @@ const LedControl = () => {
 
   const handleSelectChange = (event) => {
     setMode(event.target.value);
+    
+
   };
 // Load the state of the switch from localStorage on page load
 const loadSwitchState = () => {
@@ -79,7 +81,7 @@ const loadSwitchState = () => {
   } else {
     setValueAll(false);
   }
-  if(!useRef){
+  if(localStorage.getItem('mode')!=null){
     setMode(localStorage.getItem('mode'));
   }
 
