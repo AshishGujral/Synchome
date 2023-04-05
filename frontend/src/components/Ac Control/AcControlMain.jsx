@@ -106,8 +106,8 @@ const AcControlMain = () => {
         console.log(err);
       }
       if (
-        tempValue[1] >= sensorData.temperature ||
-        humValue[1] >= sensorData.humidity
+        tempValue[1] >= parseInt(sensorData.temperature) ||
+        humValue[1] >= parseInt(sensorData.humidity)
       ) {
         console.log("calling if fan api");
         setFanStatus("ON");
