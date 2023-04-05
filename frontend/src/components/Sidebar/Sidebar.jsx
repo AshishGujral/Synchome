@@ -16,6 +16,7 @@ import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
 import YardOutlinedIcon from "@mui/icons-material/YardOutlined";
 import SpatialTrackingOutlinedIcon from "@mui/icons-material/SpatialTrackingOutlined";
 import DeviceThermostatOutlinedIcon from "@mui/icons-material/DeviceThermostatOutlined";
+import PersonIcon from '@mui/icons-material/Person';
 import { useState } from "react";
 import { motion } from "framer-motion";
 
@@ -25,7 +26,6 @@ const data = [
     link: "/",
     icon: <HomeOutlined />,
   },
-  { name: "Inbox", icon: <InboxOutlined /> },
   { name: "Lights",link:"/ledcontrol", icon: <EmojiObjectsIcon /> },
   { name: "Plants", link: "/waterControl", icon: <YardOutlinedIcon /> },
   { name: "Proximity", link: "/motioncontrol", icon: <SpatialTrackingOutlinedIcon /> },
@@ -34,6 +34,7 @@ const data = [
     link: "/accontrol",
     icon: <DeviceThermostatOutlinedIcon />,
   },
+  { name: "Profile", icon: <PersonIcon />, link:"/UserHome" },
 ];
 
 function Sidebar() {
