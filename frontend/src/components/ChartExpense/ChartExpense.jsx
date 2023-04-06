@@ -23,60 +23,53 @@ import { useState ,useEffect} from "react";
 const ChartExpense = () => {
   const [period, setPeriod] = useState("month");
   const [expenseData, setExpenseData] = useState([]);
-  const [labels, setLabels] = useState([
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ]);
-
-  const handleChange = (event) => {
-    setPeriod(event.target.value);
-    if (period === "week") {
-      setLabels([
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ]);
-    } else
-      setLabels([
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-      ]);
-  };
-
+  const [labels, setLabels] = useState([]);
+  
+  
   // fetching data from database
-  const getData = async () => {
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    try {
-      const response = await axios.get('http://localhost:3000/backend/routes/dht',{ headers });
-      const data = response.data;
-      console.log("data",data[0].temperature);
-      const sevenDaysAgo = subDays(new Date(), 7); // Calculate the date 7 days ago
-      const filteredData = data.filter((d) => new Date(d.timestamp) > sevenDaysAgo); // Filter the data array
-      const temperatures = filteredData.map((d) => d.temperature); // Map the filtered data to an array of temperatures
-      setExpenseData(temperatures);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+    useEffect(() => {
+      const fetchData = async () => {
+        const headers = {
+          "Content-Type": "application/json",
+        };
+        const response = await axios.get('http://localhost:3000/backend/routes/dht', { headers });
+        const data = response.data;
+        
+        
+        /*const currentDate = new Date();
+        const before = new Date();
+        before.setDate(currentDate.getDate() - 5);*/
 
-  useEffect(() => {
-    getData();
-
-  }, []);
+        const filteredData = data.filter(item => {
+          const itemDate = new Date(item.time.substr(0, 10)); // extract date portion
+          return itemDate.toISOString().substr(0,10); //>= before.toISOString().substr(0,10) && itemDate.toISOString().substr(0,10) <= currentDate.toISOString().substr(0,10);
+        });
+  
+        const groupedData = {};
+  
+        filteredData.forEach(item => {
+          const date = item.time.substr(0, 10);
+          if (!groupedData[date]) {
+            groupedData[date] = {
+              date: date,
+              temp: item.temperature,
+              humi: item.humidity
+            };
+          } else {
+            groupedData[date].temp =item.temperature;
+            groupedData[date].humi = item.humidity;
+          }
+        });
+        // use object.value to return an array of grouped data
+        const aggregatedData = Object.values(groupedData);
+        setExpenseData(aggregatedData);
+        console.log("aggregate",aggregatedData);
+        console.log("ExpenseData",groupedData);
+      };
+  
+      fetchData();
+    }, []);
+    
   const Box = styled("div")({
     border: "2px solid red",
     borderRadius: "5%",
@@ -107,12 +100,12 @@ const ChartExpense = () => {
     scales: {
       x: {
         grid: {
-          display: false,
+          display: true,
         },
       },
       y: {
         grid: {
-          display: false,
+          display: true,
         },
         title: {
           display: true,
@@ -120,28 +113,31 @@ const ChartExpense = () => {
         },
       },
     },
-    plugins: {
-      legend: {
-        display: false,
-      },
-      title: {
-        display: true,
-        text: "Electricity Expense",
-      },
-    },
   };
 
   const data = {
-    labels,
+
+    labels: expenseData.map(item => item.date), // use the date as the label
+    temp:expenseData.map(item => item.temp),
+
     datasets: [
       {
-        label: "Dataset 1",
-        data: expenseData,
+        label: "Temperature",
+        data:expenseData.map(item => item.temp), // use expenseData and map to the temp value
+        borderColor: "#FF9060",
+        backgroundColor: "#f3e5f573",
+      },
+      {
+        label: "Humidity",
+        data:expenseData.map(item => item.humi), // use expenseData and map to the temp value
         borderColor: "#FF9060",
         backgroundColor: "#f3e5f573",
       },
     ],
+  
   };
+
+  console.log(data);
 
   return (
     
@@ -153,7 +149,6 @@ const ChartExpense = () => {
           id="demo-select-small"
           value={period}
           label="Time Period"
-          onChange={handleChange}
         >
           <MenuItem value={"month"}>Week</MenuItem>
           <MenuItem value={"week"}>Month</MenuItem>
@@ -161,6 +156,7 @@ const ChartExpense = () => {
       </FormControl>
 
       <Line options={options} data={data} />
+    {  console.log("Hello",data)}
     </Box>
   );
 };
