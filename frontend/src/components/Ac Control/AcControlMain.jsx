@@ -50,6 +50,7 @@ const AcControlMain = () => {
   const [sensorData, setSensorData] = useState("");
   const [nameOne, setNameOne] = useState("Kitchen");
   const [valueOne, setValueOne] = useState(false);
+  const [tempData, setTempData] = useState([]);
 
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
@@ -93,10 +94,48 @@ const AcControlMain = () => {
 
     console.log("setting range values");
   }
+  const fetchData = async () => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    const response = await axios.get('http://localhost:3000/backend/routes/dht', { headers });
+    const data = response.data;
+    
+    
+    /*const currentDate = new Date();
+    const before = new Date();
+    before.setDate(currentDate.getDate() - 5);*/
+
+    const filteredData = data.filter(item => {
+      const itemDate = new Date(item.time.substr(0, 10)); // extract date portion
+      return itemDate.toISOString().substr(0,10); //>= before.toISOString().substr(0,10) && itemDate.toISOString().substr(0,10) <= currentDate.toISOString().substr(0,10);
+    });
+
+    const groupedData = {};
+
+    filteredData.forEach(item => {
+      const date = item.time.substr(0, 10);
+      if (!groupedData[date]) {
+        groupedData[date] = {
+          date: date,
+          temp: item.temperature,
+          humi: item.humidity
+        };
+      } else {
+        groupedData[date].temp =item.temperature;
+        groupedData[date].humi = item.humidity;
+      }
+    });
+    const aggregatedData = Object.values(groupedData);
+    setTempData(aggregatedData);
+    console.log("aggreagte",aggregatedData);
+  }
 
   useEffect(() => {
+    fetchData();
     getTempAndHum(); // from sensor
     setTempAndHumRange(); // from DB
+  
   }, []);
 
   useEffect(() => {
@@ -238,7 +277,7 @@ const AcControlMain = () => {
             Power Consumed
             <div className="power-content">
               {" "}
-              <ChartExpense />
+              <ChartExpense tempData={tempData} />
             </div>
           </div>
           <div className="Controls">

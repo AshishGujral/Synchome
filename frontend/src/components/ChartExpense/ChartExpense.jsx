@@ -20,63 +20,18 @@ import { subDays } from 'date-fns';
 
 import { useState ,useEffect} from "react";
 
-const ChartExpense = () => {
+const ChartExpense = (tempData) => {
   const [period, setPeriod] = useState("month");
-  const [expenseData, setExpenseData] = useState([]);
+ // const [chartData] = tempData;
   const [labels, setLabels] = useState([]);
-  
-  
-  // fetching data from database
-    useEffect(() => {
-      const fetchData = async () => {
-        const headers = {
-          "Content-Type": "application/json",
-        };
-        const response = await axios.get('http://localhost:3000/backend/routes/dht', { headers });
-        const data = response.data;
-        
-        
-        /*const currentDate = new Date();
-        const before = new Date();
-        before.setDate(currentDate.getDate() - 5);*/
-
-        const filteredData = data.filter(item => {
-          const itemDate = new Date(item.time.substr(0, 10)); // extract date portion
-          return itemDate.toISOString().substr(0,10); //>= before.toISOString().substr(0,10) && itemDate.toISOString().substr(0,10) <= currentDate.toISOString().substr(0,10);
-        });
-  
-        const groupedData = {};
-  
-        filteredData.forEach(item => {
-          const date = item.time.substr(0, 10);
-          if (!groupedData[date]) {
-            groupedData[date] = {
-              date: date,
-              temp: item.temperature,
-              humi: item.humidity
-            };
-          } else {
-            groupedData[date].temp =item.temperature;
-            groupedData[date].humi = item.humidity;
-          }
-        });
-        // use object.value to return an array of grouped data
-        const aggregatedData = Object.values(groupedData);
-        setExpenseData(aggregatedData);
-        console.log("aggregate",aggregatedData);
-        console.log("ExpenseData",groupedData);
-      };
-  
-      fetchData();
-    }, []);
-    
+  const [datasets,setDatasets]= useState([]);
   const Box = styled("div")({
-    border: "2px solid #0000003d",
+    border: "2px solid red",
     borderRadius: "5%",
-    // backgroundColor: "#f3e5f53e",
+    backgroundColor: "#f3e5f53e",
     height: "300px",
   });
-
+  console.log("datasets",datasets);
   const StyledSelect = styled(Select)`
     background-color: whitesmoke;
   `;
@@ -114,30 +69,33 @@ const ChartExpense = () => {
       },
     },
   };
+  // fetching data from database
 
+  useEffect(() => {
+    if (tempData.tempData.length > 0) {
+      setLabels(tempData.tempData.map(item => item.date));
+      setDatasets([
+        {
+          label: "Temperature",
+          data: tempData.tempData.map(item => item.temp),
+          borderColor: "#FF9060",
+          backgroundColor: "#f3e5f573",
+        },
+        {
+          label: "Humidity",
+          data: tempData.tempData.map(item => item.humi),
+          borderColor: "#FF9060",
+          backgroundColor: "#f3e5f573",
+        },
+      ]);
+    }
+  }, [tempData]);
   const data = {
 
-    labels: expenseData.map(item => item.date), // use the date as the label
-    temp:expenseData.map(item => item.temp),
-
-    datasets: [
-      {
-        label: "Temperature",
-        data:expenseData.map(item => item.temp), // use expenseData and map to the temp value
-        borderColor: "#FF9060",
-        backgroundColor: "#f3e5f573",
-      },
-      {
-        label: "Humidity",
-        data:expenseData.map(item => item.humi), // use expenseData and map to the temp value
-        borderColor: "#FF9060",
-        backgroundColor: "#f3e5f573",
-      },
-    ],
-  
+    labels: labels, // use the date as the label
+    datasets:datasets,
   };
 
-  console.log(data);
 
   return (
     
@@ -156,7 +114,6 @@ const ChartExpense = () => {
       </FormControl>
 
       <Line options={options} data={data} />
-    {  console.log("Hello",data)}
     </Box>
   );
 };
