@@ -3,6 +3,7 @@ import Topbar from "../../components/Topbar/Topbar";
 import FourColumnDiv from "../../components/main/FourColumnDiv";
 import ChartExpense from "../../components/ChartExpense/ChartExpense";
 import "./watercontrol.css";
+import axios from "axios";
 import React, { Component, useState, useContext } from "react";
 import {
   Typography,
@@ -159,7 +160,7 @@ const WaterControl = () => {
               </div>
               <div className="water__chartInfo">
                 <div className="water__powerConsumed">
-                  <ChartExpense />
+                  {/*<ChartExpense />*/}
                 </div>
               </div>
               <div className="water__info" id="water__info">

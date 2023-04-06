@@ -127,7 +127,7 @@ const Home = () => {
         <TopbarGrid className="rightColumn" item xs={3}>
           <Userlist />
           <div className="chart">
-          <ChartExpense />
+          {/*<ChartExpense />*/}
           </div>
        
         </TopbarGrid>
