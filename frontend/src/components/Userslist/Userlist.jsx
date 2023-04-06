@@ -11,7 +11,7 @@ import React from "react";
 const StyledStack = styled(Stack)`
   display: flex;
   margin-left: 20px;
-  border: 2px solid red;
+  border: "2px solid #0000003d";
   border-radius: 5%;
   padding: 10px;
   max-height: 20%;
@@ -50,7 +50,7 @@ export default function Userlist() {
       <Title>Members (top 4)</Title>
       <StyledList
         className="box"
-        sx={{ width: "100%", maxWidth: 360, bgcolor: "#f3e5f53e" }}
+        sx={{ width: "100%", maxWidth: 360, bgcolor: "#c6aaff21" }}
       >
         {userData
           .slice(0, endIndex)

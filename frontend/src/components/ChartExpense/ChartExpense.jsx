@@ -71,9 +71,9 @@ const ChartExpense = () => {
     }, []);
     
   const Box = styled("div")({
-    border: "2px solid red",
+    border: "2px solid #0000003d",
     borderRadius: "5%",
-    backgroundColor: "#f3e5f53e",
+    // backgroundColor: "#f3e5f53e",
     height: "300px",
   });
 
