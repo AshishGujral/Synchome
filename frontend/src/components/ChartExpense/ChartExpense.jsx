@@ -3,7 +3,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import { FormControl, styled } from "@mui/material";
 import Select from "@mui/material/Select";
-
+import axios from "axios";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -16,8 +16,9 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { faker } from "@faker-js/faker";
+import { subDays } from 'date-fns';
 
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 
 const ChartExpense = () => {
   const [period, setPeriod] = useState("month");
@@ -54,6 +55,28 @@ const ChartExpense = () => {
       ]);
   };
 
+  // fetching data from database
+  const getData = async () => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    try {
+      const response = await axios.get('http://localhost:3000/backend/routes/dht',{ headers });
+      const data = response.data;
+      console.log("data",data[0].temperature);
+      const sevenDaysAgo = subDays(new Date(), 7); // Calculate the date 7 days ago
+      const filteredData = data.filter((d) => new Date(d.timestamp) > sevenDaysAgo); // Filter the data array
+      const temperatures = filteredData.map((d) => d.temperature); // Map the filtered data to an array of temperatures
+      setExpenseData(temperatures);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+
+  }, []);
   const Box = styled("div")({
     border: "2px solid red",
     borderRadius: "5%",
@@ -113,7 +136,7 @@ const ChartExpense = () => {
     datasets: [
       {
         label: "Dataset 1",
-        data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+        data: expenseData,
         borderColor: "#FF9060",
         backgroundColor: "#f3e5f573",
       },

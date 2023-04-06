@@ -17,6 +17,7 @@ dotenv.config();
 const app = express();
 
 app.use(express.json()); // send any json file/object
+app.use(cors());
 
 // linking images to posts: using path and url module
 const __filename = fileURLToPath(import.meta.url);

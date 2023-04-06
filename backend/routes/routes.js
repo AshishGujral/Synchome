@@ -2,7 +2,7 @@ import express, { response } from "express";
 import axios from "axios";
 import fetch from "node-fetch";
 import LED from "../models/Led.js";
-import DHT from "../models/DHT.js";
+import dht from "../models/DHT.js";
 import MOTION from "../models/Motion.js";
 import RANGE from "../models/Range.js";
 import FAN from "../models/Fan.js";
@@ -187,6 +187,16 @@ router.patch("/update/:id", (req, res) => {
 //Delete by ID Method
 router.delete("/delete/:id", (req, res) => {
   res.send("Delete by ID API");
+});
+
+// Get Data from DHTS
+router.get("/dht",async (req, res) => {
+  try {
+    const data = await dht.find();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 export default router;
