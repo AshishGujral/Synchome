@@ -2,13 +2,13 @@ import express, { response } from "express";
 import axios from "axios";
 import fetch from "node-fetch";
 import LED from "../models/Led.js";
-import dht from "../models/DHT.js";
+import DHT from "../models/DHT.js";
 import MOTION from "../models/Motion.js";
 import RANGE from "../models/Range.js";
 import FAN from "../models/Fan.js";
 
 const router = express.Router();
-const espIP = "http://192.168.147.28";
+const espIP = "http://192.168.52.28";
 
 //Manage LED
 router.post("/manageLed", async (req, res) => {
