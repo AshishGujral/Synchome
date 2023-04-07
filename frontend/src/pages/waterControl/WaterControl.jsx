@@ -4,7 +4,8 @@ import FourColumnDiv from "../../components/main/FourColumnDiv";
 import ChartExpense from "../../components/ChartExpense/ChartExpense";
 import "./watercontrol.css";
 import axios from "axios";
-import React, { Component, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { Context } from "../../context/Context";
 import {
   Typography,
   Radio,
@@ -17,7 +18,7 @@ import ForestIcon from "@mui/icons-material/Forest";
 import { Grid, styled } from "@mui/material";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
-import { useEffect } from "react";
+
 const SidebarGrid = styled(Grid)`
   max-width: 10%;
 `;
@@ -50,13 +51,17 @@ function valuetext(value) {
 }
 
 const WaterControl = () => {
+  // switch states
   const [nameOne, setNameOne] = useState("Yard");
-  const [tempValue, setTempValue] = React.useState([20, 37]);
   const [valueOne, setValueOne] = useState(false);
-
+// slider states
+  const [moistLevel, setMoistLevel] = React.useState([20, 37]);
+// sensor data states
   const [sensorData, setSensorData] = useState("");
+  // user from context
+  const {user} = useContext(Context);
 
-  const handleTempChange = async (event, newValue, activeThumb) => {
+  const handleMoistChange = async (event, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) {
       return;
     }
@@ -64,21 +69,20 @@ const WaterControl = () => {
     if (newValue[1] - newValue[0] < minDistance) {
       if (activeThumb === 0) {
         const clamped = Math.min(newValue[0], 100 - minDistance);
-        setTempValue([clamped, clamped + minDistance]);
+        setMoistLevel([clamped, clamped + minDistance]);
       } else {
         const clamped = Math.max(newValue[1], minDistance);
-        setTempValue([clamped - minDistance, clamped]);
+        setMoistLevel([clamped - minDistance, clamped]);
       }
     } else {
-      setTempValue(newValue);
+      setMoistLevel(newValue);
     }
 
     try {
+      // TODO make api to store moist range
       await axios.put("/api/routes/saveRange", {
-        tempMax: tempValue[1],
-        tempMin: tempValue[0],
-        humMin: humValue[0],
-        humMax: humValue[1],
+        moistMax: moistLevel[1],
+        moistMin: moistLevel[0],
         userId: user._id,
       });
     } catch (error) {
@@ -86,22 +90,39 @@ const WaterControl = () => {
     }
   };
 
-  // get temperature data from sensor
+  // get moisture data from sensor
+  const getMoistFromSensor = async () => {
+    // TODO change API
+    const res = await axios.post("/api/routes/manageDHT", {
+      userId: user._id,
+    });
+    setSensorData(res.data);
+  };
+
+  // set Moisture Range from DB
+  const setMoistRange = async () => {
+    // TODO change get API
+    const res = await axios.get("api/routes/saveRange");
+    setMoistValue([res.data.moistMin, res.data.moistMax]);
+
+    console.log("setting range values");
+  };
+
   useEffect(() => {
-    const getTempAndHum = async () => {
-      const res = await axios.post("/api/routes/manageDHT", {
-        userId: user._id,
-      });
-      setSensorData(res.data);
-    };
-    getTempAndHum();
+  setMoistRange();
+    getMoistFromSensor();
   }, []);
+
+  // TODO check moisture value in set range and turn water led
+  useEffect(()=>{
+
+  },[])
 
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
 
     const status = valueOne ? "OFF" : "ON";
-    console.log("yard ", status);
+   // TODO set correct API call to tun on/Off water led
     /* try {
       await axios.post("/api/routes/manageLed", {
         name: nameOne,
@@ -139,16 +160,16 @@ const WaterControl = () => {
                   Controls
                   <div className="controls-content" id="controls">
                     <Box sx={{ width: 300, display: "flex", gap: "1em" }}>
-                      <Typography variant="h5">{tempValue[0]}</Typography>
+                      <Typography variant="h5">{moistLevel[0]}</Typography>
                       <Slider
                         getAriaLabel={() => "Minimum distance shift"}
-                        onChange={handleTempChange}
-                        value={tempValue}
+                        onChange={handleMoistChange}
+                        value={moistLevel}
                         valueLabelDisplay="auto"
                         getAriaValueText={valuetext}
                         disableSwap
                       />
-                      <Typography variant="h5">{tempValue[1]}</Typography>
+                      <Typography variant="h5">{moistLevel[1]}</Typography>
                     </Box>
                     <Box>
                       <Typography variant="h5">
