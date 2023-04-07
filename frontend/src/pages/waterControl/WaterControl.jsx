@@ -45,17 +45,20 @@ const infoData = [
 ];
 
 // slider helper functions
-
 function valuetext(value) {
   return `${value}°C`;
 }
+
+const minDistance = 10;
 
 const WaterControl = () => {
   // switch states
   const [nameOne, setNameOne] = useState("Yard");
   const [valueOne, setValueOne] = useState(false);
+
+  const [ledStatus, setLedStatus] = useState("OFF")
 // slider states
-  const [moistLevel, setMoistLevel] = React.useState([20, 37]);
+  const [moistValue, setmoistValue] = React.useState([20, 37]);
 // sensor data states
   const [sensorData, setSensorData] = useState("");
   // user from context
@@ -69,20 +72,20 @@ const WaterControl = () => {
     if (newValue[1] - newValue[0] < minDistance) {
       if (activeThumb === 0) {
         const clamped = Math.min(newValue[0], 100 - minDistance);
-        setMoistLevel([clamped, clamped + minDistance]);
+        setmoistValue([clamped, clamped + minDistance]);
       } else {
         const clamped = Math.max(newValue[1], minDistance);
-        setMoistLevel([clamped - minDistance, clamped]);
+        setmoistValue([clamped - minDistance, clamped]);
       }
     } else {
-      setMoistLevel(newValue);
+      setmoistValue(newValue);
     }
 
     try {
-      // TODO make api to store moist range
-      await axios.put("/api/routes/saveRange", {
-        moistMax: moistLevel[1],
-        moistMin: moistLevel[0],
+      // TODO 
+      await axios.put("/api/routes/saveSoilRange", {
+        moistMax: moistValue[1],
+        moistMin: moistValue[0],
         userId: user._id,
       });
     } catch (error) {
@@ -92,8 +95,8 @@ const WaterControl = () => {
 
   // get moisture data from sensor
   const getMoistFromSensor = async () => {
-    // TODO change API
-    const res = await axios.post("/api/routes/manageDHT", {
+    // TODO 
+    const res = await axios.post("/api/routes/manageSoil", {
       userId: user._id,
     });
     setSensorData(res.data);
@@ -101,8 +104,8 @@ const WaterControl = () => {
 
   // set Moisture Range from DB
   const setMoistRange = async () => {
-    // TODO change get API
-    const res = await axios.get("api/routes/saveRange");
+    // TODO 
+    const res = await axios.get("api/routes/saveSoilRange");
     setMoistValue([res.data.moistMin, res.data.moistMax]);
 
     console.log("setting range values");
@@ -114,24 +117,75 @@ const WaterControl = () => {
   }, []);
 
   // TODO check moisture value in set range and turn water led
-  useEffect(()=>{
+  useEffect(
+    () => {
+      const interval = setInterval(async () => {
+        console.log("Logs every 10 seconds");
+        console.log("max val" + moistValue[1]);
+        console.log("min val" + moistValue[0]);
+        getMoistFromSensor();
+        // await getMoistFromSensor();
+        try {
+          const res = await axios.post("/api/routes/manageSoil", {
+            userId: user._id,
+          });
+          setSensorData(res.data);
+        } catch (err) {
+          console.log(err);
+        }
+        if (
+          (moistValue[0] <= parseInt("30") &&
+          parseInt("30") <= moistValue[1])
+        ) {
+          console.log("calling if led soil api");
+          setLedStatus("ON");
+          // console.log(fanStatus);
+          // await callFan();
+          try {
+            await axios.post("/api/routes/manageSoilLed", {
+              userId: user._id,
+              status: "ON",
+            });
+          } catch (err) {
+            console.log(err);
+          }
+          setValueOne(true);
+        } else {
+          setLedStatus("OFF");
 
-  },[])
+          console.log("calling else led soil api");
+
+          try {
+            await axios.post("/api/routes/manageSoilLed", {
+              userId: user._id,
+              status: "OFF",
+            });
+          } catch (err) {
+            console.log(err);
+          }
+          setValueOne(false);
+        }
+      }, 10000);
+
+      return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+    },
+    [moistValue[1], moistValue[0], valueOne, sensorData],
+    
+  );
 
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
 
     const status = valueOne ? "OFF" : "ON";
-   // TODO set correct API call to tun on/Off water led
-    /* try {
-      await axios.post("/api/routes/manageLed", {
-        name: nameOne,
-        mode: mode,
-        status: status,
+   // TODO 
+  try {
+      await axios.post("/api/routes/manageSoilLed", {
+        ledStatus: status,
+        userId: user.user._id
       });
     } catch (err) {
       console.log(err);
-    }*/
+    }
   };
 
   return (
@@ -160,16 +214,16 @@ const WaterControl = () => {
                   Controls
                   <div className="controls-content" id="controls">
                     <Box sx={{ width: 300, display: "flex", gap: "1em" }}>
-                      <Typography variant="h5">{moistLevel[0]}</Typography>
+                      <Typography variant="h5">{moistValue[0]}</Typography>
                       <Slider
                         getAriaLabel={() => "Minimum distance shift"}
                         onChange={handleMoistChange}
-                        value={moistLevel}
+                        value={moistValue}
                         valueLabelDisplay="auto"
                         getAriaValueText={valuetext}
                         disableSwap
                       />
-                      <Typography variant="h5">{moistLevel[1]}</Typography>
+                      <Typography variant="h5">{moistValue[1]}</Typography>
                     </Box>
                     <Box>
                       <Typography variant="h5">
