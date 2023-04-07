@@ -146,7 +146,7 @@ const AcControlMain = () => {
         console.log("Logs every 10 seconds");
         console.log("temp val" + tempValue[1]);
         console.log("hum val" + humValue[1]);
-
+        getTempAndHum();
         // await getTempAndHum();
         try {
           const res = await axios.post("/api/routes/manageDHT", {
@@ -198,7 +198,7 @@ const AcControlMain = () => {
       return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
     },
     [tempValue[1], humValue[1]],
-    valueOne
+    valueOne, sensorData
   );
 
   // control fan speed
