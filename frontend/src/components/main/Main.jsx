@@ -7,7 +7,6 @@ import CloudIcon from '@mui/icons-material/Cloud';
 import ThunderstormIcon from '@mui/icons-material/Thunderstorm';
 const App = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedOption, setSelectedOption] = useState("Living Room");
   const { user } = useContext(Context);
   // getting weather data using api
   const [weather, setWeather] = useState(null);
@@ -71,13 +70,6 @@ const App = () => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = (option) => {
-    setAnchorEl(null);
-    if (option) {
-      setSelectedOption(option);
-    }
-  };
-
   return (
     <div className="Main">
       <div className="groupWrapper6">
@@ -114,27 +106,7 @@ const App = () => {
           <p className=""> Humidity {humi}%</p>
         </div>
 
-        <div className="dropdown-container">
-          <Button
-            variant="outlined"
-            onClick={handleClick}
-            endIcon={<ArrowDropDown />}
-          >
-            {selectedOption}
-          </Button>
-          <Menu
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={() => handleClose(null)}
-          >
-            <MenuItem onClick={() => handleClose("Living Room")}>
-              Living Room
-            </MenuItem>
-            <MenuItem onClick={() => handleClose("Kitchen")}>Kitchen</MenuItem>
-            <MenuItem onClick={() => handleClose("Tokyo")}>Tokyo</MenuItem>
-          </Menu>
-        </div>
+  
       </div>
     </div>
   );

@@ -6,7 +6,6 @@ import DHT from "../models/DHT.js";
 import MOTION from "../models/Motion.js";
 import RANGE from "../models/Range.js";
 import FAN from "../models/Fan.js";
-
 const router = express.Router();
 const espIP = "http://192.168.52.28";
 
@@ -193,6 +192,16 @@ router.delete("/delete/:id", (req, res) => {
 router.get("/dht",async (req, res) => {
   try {
     const data = await dht.find();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get Data from led
+router.get("/leds",async (req, res) => {
+  try {
+    const data = await LED.find();
     res.json(data);
   } catch (error) {
     res.status(500).json({ message: error.message });

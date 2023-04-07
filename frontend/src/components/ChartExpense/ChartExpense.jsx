@@ -25,6 +25,7 @@ const ChartExpense = (tempData) => {
  // const [chartData] = tempData;
   const [labels, setLabels] = useState([]);
   const [datasets,setDatasets]= useState([]);
+  console.log("tenp",tempData);
   const Box = styled("div")({
     border: "2px solid red",
     borderRadius: "5%",
@@ -72,22 +73,38 @@ const ChartExpense = (tempData) => {
   // fetching data from database
 
   useEffect(() => {
+  
     if (tempData.tempData.length > 0) {
-      setLabels(tempData.tempData.map(item => item.date));
-      setDatasets([
+
+      // use type of to check we have seconds or date
+      if(tempData.tempData.some(item => typeof item.seconds != "undefined")){
+        setLabels(tempData.tempData.map(item => item.seconds));
+        setDatasets([
         {
-          label: "Temperature",
-          data: tempData.tempData.map(item => item.temp),
+          label:"Seconds",
+          data: tempData.tempData.map(item => item.seconds),
           borderColor: "#FF9060",
           backgroundColor: "#f3e5f573",
         },
-        {
-          label: "Humidity",
-          data: tempData.tempData.map(item => item.humi),
-          borderColor: "#FF9060",
-          backgroundColor: "#f3e5f573",
-        },
-      ]);
+        ]);
+      }
+      if(tempData.tempData.some(item => typeof item.date != "undefined")){
+        setLabels(tempData.tempData.map(item => item.date));
+        setDatasets([
+          {
+            label: "Temperature",
+            data: tempData.tempData.map(item => item.temp),
+            borderColor: "#FF9060",
+            backgroundColor: "#f3e5f573",
+          },
+          {
+            label: "Humidity",
+            data: tempData.tempData.map(item => item.humi),
+            borderColor: "#FF9060",
+            backgroundColor: "#f3e5f573",
+          },
+        ]);
+      }
     }
   }, [tempData]);
   const data = {

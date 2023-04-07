@@ -97,7 +97,6 @@ const MotionControl = () => {
       {/* ----------------------------------------------- */}
 
       <TopbarGrid className="rightColumn" item xs={3}>
-        <Topbar />
       </TopbarGrid>
     </ContainerGrid>
   );

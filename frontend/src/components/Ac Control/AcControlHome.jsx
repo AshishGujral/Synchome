@@ -35,7 +35,6 @@ export default class AcControlHome extends Component {
       </MainGrid>
     
       <TopbarGrid className="rightColumn" item xs ={3}>
-       <Topbar/>
       </TopbarGrid>
     
     </ContainerGrid>
