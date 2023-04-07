@@ -25,7 +25,8 @@ uint8_t LEDGreenPin = 4;
 uint8_t LEDBluePin = 5;
 
 //Initializing Soil Pins
-uint8_t SoilPin = 21;
+uint8_t SoilPin = 34;
+uint8_t SoilLedPin = 23;
 
 //Initializing MOTOR pins
 uint8_t MotorEnablePin = 13;
@@ -44,13 +45,18 @@ bool LEDRed = LOW;
 bool LEDGreen = LOW;
 bool LEDBlue = LOW;
 
+//Initializing SOIL LED status variables
+bool SoilLed = LOW;
+
 //Initializing DHT variables
 float Temperature;
 float Humidity;
 DHT dht(DHTPin, DHTTYPE);
 
 //Initializing Soil variables
-int soilHumiditiy;
+uint8_t SoilMoisture;
+uint8_t SensorAnalog;
+String SoilLedStatus="";
 
 //Initializing Motion variables
 unsigned long now = millis();
@@ -114,16 +120,19 @@ void setup() {
   initWiFi();
   delay(3000);
 
-  ledPinsInit();
+  // ledPinsInit();
+  // delay(1000);
+
+  // dhtPinsInit();
+  // delay(1000);
+
+  // motorPinsInit();
+  // delay(1000);
+
+  soilPinsInit();
   delay(1000);
 
-  dhtPinsInit();
-  delay(1000);
-
-  motorPinsInit();
-  delay(1000);
-
-  motionPinsInit();
+  // motionPinsInit();
   delay(5000);  
 
   routeSetup();
@@ -136,7 +145,11 @@ void loop() {
   server.handleClient();
 
  //LED Looping
-  runLeds();
+  // runLeds();
+
+  //Soil LED Looping
+  runSoilLed();
+
 }
 
 void runMotor(void* pvParameters){
@@ -181,6 +194,15 @@ void runMotion(void * pvParameters){
       startTimer = false;
       motion = false;
     }
+  }
+}
+
+void runSoilLed(){
+  if(SoilLed){
+    digitalWrite(SoilLedPin, HIGH);    
+  }
+  else{
+    digitalWrite(SoilLedPin, LOW);
   }
 }
 
@@ -242,6 +264,10 @@ void runLeds(){
   }
 }
 
+//Function to initialize Soil Pins
+void soilPinsInit(){
+  pinMode(SoilLedPin, OUTPUT);
+}
 
 //Function to initialize LED Pins. Either Input or Output.
 void ledPinsInit(){
@@ -320,18 +346,19 @@ void routeSetup(){
   delay(1000);
 
   //Soil Route
-  server.on("/handleSoil", )
+  server.on("/handleSoil", handleSoil);
+
+  //Soil LED
+  server.on("/handleSoilLed", HTTP_POST, handleSoilLed);  
 
   server.begin();
   Serial.println("HTTP server started");
 }
 
 void handleOnConnect(){
-
   Serial.println("Connected");
   create_json();
   server.send(200, "application/json", buffer);
-  
 }
 
 
@@ -371,6 +398,25 @@ void handleMotor(){
   create_json();
   server.send(200, "application/json", buffer);
 
+}
+
+//Handle Soil LED
+void handleSoilLed(){
+  String body = server.arg("plain");
+  deserializeJson(jsonDocument, body);
+  SoilLedStatus = jsonDocument["status"].as<String>();
+  
+  Serial.println("Soil LED Status: "+SoilLedStatus);
+
+  if(SoilLedStatus=="ON"){
+    SoilLed = HIGH;
+  }
+  else{
+    SoilLed = LOW;
+  }
+  
+  create_json();
+  server.send(200, "application/json", buffer);
 }
 
 //Handle LED Function
@@ -431,6 +477,18 @@ void handleLED(){
   server.send(200, "application/json", buffer);
 }
 
+//Handle Soil
+void handleSoil(){
+  SensorAnalog = analogRead(SoilPin);
+  SoilMoisture = ( 100 - ( (SensorAnalog/4095.00) * 100 ) );
+  Serial.print("Moisture = ");
+  Serial.print(SoilMoisture);  /* Print Temperature on the serial window */
+  Serial.println("%");
+  delay(1000);   
+  create_soil_json();
+  server.send(200, "application/json", buffer);
+}
+
 //Handle DHT
 void handleDHT(){
   Temperature = dht.readTemperature(); // Gets the values of the temperature
@@ -455,5 +513,13 @@ void create_dht_json() {
   jsonDocument["success"] = "true";
   jsonDocument["temperature"] = (String)Temperature ;
   jsonDocument["humidity"] = (String)Humidity;
+  serializeJson(jsonDocument, buffer);
+}
+
+//Create Soil Moisture JSON Object
+void create_soil_json(){
+  jsonDocument.clear();  
+  jsonDocument["success"] = "true";
+  jsonDocument["moisture"] = (String)SoilMoisture ;
   serializeJson(jsonDocument, buffer);
 }
