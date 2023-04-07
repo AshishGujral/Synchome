@@ -136,7 +136,7 @@ const AcControlMain = () => {
 
   useEffect(() => {
     fetchData();
-    getTempAndHum(); // from sensor
+    //getTempAndHum(); // from sensor
     setTempAndHumRange(); // from DB
   }, []);
 
