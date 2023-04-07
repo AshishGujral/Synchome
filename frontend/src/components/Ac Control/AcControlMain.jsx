@@ -94,6 +94,7 @@ const AcControlMain = () => {
 
     console.log("setting range values");
   }
+
   const fetchData = async () => {
     const headers = {
       "Content-Type": "application/json",
@@ -159,6 +160,7 @@ const AcControlMain = () => {
       ) {
         console.log("calling if fan api");
         setFanStatus("ON");
+        console.log(fanStatus)
         // await callFan();
         try {
           await axios.post("/api/routes/manageFan", {
@@ -171,8 +173,9 @@ const AcControlMain = () => {
         }
         setValueOne(true);
       } else {
-        // setFanStatus("OFF");
-        // await callFan();
+        setFanStatus("OFF");
+        console.log(fanStatus)
+
         console.log("calling else fan api");
 
         try {
@@ -189,7 +192,7 @@ const AcControlMain = () => {
     }, 10000);
 
     return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
-  }, [tempValue[1], humValue[1]]);
+  }, [tempValue[1], humValue[1]], valueOne);
 
   // control fan speed
   const handleChange3 = (event) => {
