@@ -191,7 +191,7 @@ router.delete("/delete/:id", (req, res) => {
 // Get Data from DHTS
 router.get("/dht",async (req, res) => {
   try {
-    const data = await dht.find();
+    const data = await DHT.find();
     res.json(data);
   } catch (error) {
     res.status(500).json({ message: error.message });

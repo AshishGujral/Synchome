@@ -78,6 +78,7 @@ const ChartExpense = (tempData) => {
 
       // use type of to check we have seconds or date
       if(tempData.tempData.some(item => typeof item.seconds != "undefined")){
+        console.log("a");
         setLabels(tempData.tempData.map(item => item.seconds));
         setDatasets([
         {
@@ -88,7 +89,9 @@ const ChartExpense = (tempData) => {
         },
         ]);
       }
+      console.log("te",tempData.tempData);
       if(tempData.tempData.some(item => typeof item.date != "undefined")){
+        console.log("b");
         setLabels(tempData.tempData.map(item => item.date));
         setDatasets([
           {
