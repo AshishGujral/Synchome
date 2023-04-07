@@ -16,6 +16,7 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
+import ChartExpense from "../../components/ChartExpense/ChartExpense";
 
 const SidebarGrid = styled(Grid)`
   max-width: 10%;
@@ -40,6 +41,10 @@ const LedControl = () => {
   const [previousMode, setPreviousMode] = useState(mode);
   const [nameOne, setNameOne] = useState("red");
   const [valueOne, setValueOne] = useState(false);
+  const [secData,setSecData]=useState([]); 
+
+  const [tempData, setTempData] = useState([]);
+
 
   const [nameTwo, setNameTwo] = useState("green");
   const [valueTwo, setValueTwo] = useState(false);
@@ -89,12 +94,81 @@ const loadSwitchState = () => {
 // get data from localstorage when page reloads
 window.addEventListener('load', loadSwitchState);
 
-
-useEffect(() => {
-
-  loadSwitchState();
+const fetchData = async () => {
+  const headers = {
+    "Content-Type": "application/json",
+  };
+  const response = await axios.get('http://localhost:3000/backend/routes/leds', { headers });
+  const data = response.data;
   
-}, []);
+  
+  /*const currentDate = new Date();
+  const before = new Date();
+  before.setDate(currentDate.getDate() - 5);*/
+  // const filteredData = data.filter(item => {
+  //   const itemDate = new Date(item.time.substr(0, 10)); // extract date portion
+  //   return itemDate.toISOString().substr(0,10); //>= before.toISOString().substr(0,10) && itemDate.toISOString().substr(0,10) <= currentDate.toISOString().substr(0,10);
+  // });
+
+ 
+  const filteredData = data.filter(item => {
+    const itemDate = new Date(item.time);
+    const status = item.ledStatus;
+    return (
+     itemDate,
+     status
+    );
+  });
+  function updateRemainingSecs(prevSecs, newSec) {
+    return [...prevSecs, newSec];
+  }
+  const groupedData = {};
+  let ondate=0;
+  let offdate=0;
+  filteredData.forEach(item => {
+    
+    const date = item.time;
+    const newDate= new Date(date);
+      const status = item.ledStatus;
+      if(status == "ON"){
+      
+        // ondate =newDate.toTimeString().slice(0,8);
+        ondate = newDate;
+      }
+      else{
+        offdate = newDate;
+        const remainingMs = offdate.getTime() - ondate.getTime();
+        if (remainingMs > 0) {
+          const remainingSec = Math.floor(remainingMs / 1000);
+          setSecData(prevSecs => updateRemainingSecs(prevSecs, {seconds: remainingSec }));
+          console.log(remainingSec);
+        } else {
+          console.log("sec",0);
+        }
+      }
+
+
+    if (!groupedData[date]) {
+      groupedData[date] = {
+        date: date,
+        status: item.ledStatus
+      };
+    } else {
+      groupedData[date].status =item.ledStatus;
+    }
+  });
+  const aggregatedData = Object.values(groupedData);
+  //setTempData(Object.values(secData).slice(-5));
+  //console.log("temp",tempData);
+  
+}
+useEffect(() => {
+  loadSwitchState();
+  if (secData.length === 0) {
+    fetchData();
+  }
+setTempData(secData.slice(-6));
+}, [secData]);
 
   // using useref hook to track whether the component is mounted or not
   const mountedRef = useRef(false);
@@ -354,12 +428,13 @@ useEffect(() => {
               <MenuItem value={"BLINK"}>BLINK</MenuItem>
             </Select>
           </FormControl>
+          <ChartExpense tempData={tempData} />
         </div>
+  
       </MainGrid>
       {/* ----------------------------------------------- */}
 
       <TopbarGrid className="rightColumn" item xs={2}>
-        <Topbar />
       </TopbarGrid>
     </ContainerGrid>
   );
