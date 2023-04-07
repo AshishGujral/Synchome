@@ -94,45 +94,32 @@ const loadSwitchState = () => {
 // get data from localstorage when page reloads
 window.addEventListener('load', loadSwitchState);
 
-const fetchData = async () => {
-  const headers = {
-    "Content-Type": "application/json",
-  };
-  const response = await axios.get('http://localhost:3000/backend/routes/leds', { headers });
-  const data = response.data;
-  
-  
-  /*const currentDate = new Date();
-  const before = new Date();
-  before.setDate(currentDate.getDate() - 5);*/
-  // const filteredData = data.filter(item => {
-  //   const itemDate = new Date(item.time.substr(0, 10)); // extract date portion
-  //   return itemDate.toISOString().substr(0,10); //>= before.toISOString().substr(0,10) && itemDate.toISOString().substr(0,10) <= currentDate.toISOString().substr(0,10);
-  // });
-
- 
-  const filteredData = data.filter(item => {
-    const itemDate = new Date(item.time);
-    const status = item.ledStatus;
-    return (
-     itemDate,
-     status
-    );
-  });
-  function updateRemainingSecs(prevSecs, newSec) {
-    return [...prevSecs, newSec];
-  }
-  const groupedData = {};
-  let ondate=0;
-  let offdate=0;
-  filteredData.forEach(item => {
+useEffect(() => {
+  const fetchData = async () => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    const response = await axios.get('http://localhost:3000/backend/routes/leds', { headers });
+    const data = response.data;
     
-    const date = item.time;
-    const newDate= new Date(date);
+    function updateRemainingSecs(prevSecs, newSec,date) {
+      const existingSecs = prevSecs.find(sec => sec.date === newSec.date);
+      if (existingSecs) {
+        existingSecs.seconds += newSec.seconds;
+      } else {
+        prevSecs.push(newSec);
+      }
+      return prevSecs;
+    }
+    
+    const groupedData = {};
+    let ondate=0;
+    let offdate=0;
+    data.forEach(item => {
+      const date = item.time;
+      const newDate= new Date(date);
       const status = item.ledStatus;
       if(status == "ON"){
-      
-        // ondate =newDate.toTimeString().slice(0,8);
         ondate = newDate;
       }
       else{
@@ -140,35 +127,35 @@ const fetchData = async () => {
         const remainingMs = offdate.getTime() - ondate.getTime();
         if (remainingMs > 0) {
           const remainingSec = Math.floor(remainingMs / 1000);
-          setSecData(prevSecs => updateRemainingSecs(prevSecs, {seconds: remainingSec }));
-          console.log(remainingSec);
+          setSecData(prevSecs => updateRemainingSecs(prevSecs, { seconds: remainingSec,date: offdate.toDateString()}));
         } else {
           console.log("sec",0);
         }
       }
+      if (!groupedData[date]) {
+        groupedData[date] = {
+          date: date,
+          status: item.ledStatus
+        };
+      } else {
+        groupedData[date].status =item.ledStatus;
+      }
 
+    });
+    setTempData(secData);
+  }
 
-    if (!groupedData[date]) {
-      groupedData[date] = {
-        date: date,
-        status: item.ledStatus
-      };
-    } else {
-      groupedData[date].status =item.ledStatus;
-    }
-  });
-  const aggregatedData = Object.values(groupedData);
-  //setTempData(Object.values(secData).slice(-5));
-  //console.log("temp",tempData);
-  
-}
+  fetchData();
+}, [secData,]);
+
 useEffect(() => {
   loadSwitchState();
   if (secData.length === 0) {
-    fetchData();
+   fetch();
   }
-setTempData(secData.slice(-6));
-}, [secData]);
+
+  console.log("temo",tempData);
+},[secData]);
 
   // using useref hook to track whether the component is mounted or not
   const mountedRef = useRef(false);
@@ -181,11 +168,9 @@ setTempData(secData.slice(-6));
         (previousMode === "NORMAL" && mode === "BLINK"))
     ) {
       localStorage.setItem('mode', mode);
-      console.log("mode",mode);
       let status = "";
       if (valueAll) {
         status = "ON";
-        console.log("blue", status);
         (async () => {
           try {
             await axios.post("/api/routes/manageLed", {
@@ -430,7 +415,7 @@ setTempData(secData.slice(-6));
           </FormControl>
           <ChartExpense tempData={tempData} />
         </div>
-  
+        {/* <ChartExpense tempData={secData} /> */}
       </MainGrid>
       {/* ----------------------------------------------- */}
 

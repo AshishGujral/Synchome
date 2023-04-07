@@ -65,7 +65,7 @@ const ChartExpense = (tempData) => {
         },
         title: {
           display: true,
-          text: "$ Dollars",
+
         },
       },
     },
@@ -73,13 +73,15 @@ const ChartExpense = (tempData) => {
   // fetching data from database
 
   useEffect(() => {
-  
+    
+    console.log("tempLength",tempData.tempData.length);
     if (tempData.tempData.length > 0) {
-
+      console.log("hello");
       // use type of to check we have seconds or date
       if(tempData.tempData.some(item => typeof item.seconds != "undefined")){
         console.log("a");
-        setLabels(tempData.tempData.map(item => item.seconds));
+        console.log(tempData);
+        setLabels(tempData.tempData.map(item => item.date));
         setDatasets([
         {
           label:"Seconds",
@@ -90,7 +92,7 @@ const ChartExpense = (tempData) => {
         ]);
       }
       console.log("te",tempData.tempData);
-      if(tempData.tempData.some(item => typeof item.date != "undefined")){
+      if(tempData.tempData.some(item => typeof item.temp != "undefined")){
         console.log("b");
         setLabels(tempData.tempData.map(item => item.date));
         setDatasets([
@@ -129,7 +131,6 @@ const ChartExpense = (tempData) => {
           label="Time Period"
         >
           <MenuItem value={"month"}>Week</MenuItem>
-          <MenuItem value={"week"}>Month</MenuItem>
         </StyledSelect>
       </FormControl>
 

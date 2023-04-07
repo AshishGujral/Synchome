@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const FanSchema = new mongoose.Schema({
     time:{
         required: true,
-        type: String
+        type: Date,
+        default: Date.now
     },
     userId:{
         required: true,
