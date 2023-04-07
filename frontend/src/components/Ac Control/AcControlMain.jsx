@@ -159,7 +159,7 @@ const AcControlMain = () => {
       }
       if (
         (tempValue[0] <= parseInt(sensorData.temperature) &&
-          parseInt(sensorData.temperature)) <= tempValue[1] ||
+          parseInt(sensorData.temperature) <= tempValue[1]) ||
         (humValue[0] <= parseInt(sensorData.humidity) &&
           parseInt(sensorData.humidity) <= humValue[1])
       ) {
