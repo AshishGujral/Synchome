@@ -113,7 +113,7 @@ const WaterControl = () => {
 
   useEffect(() => {
   setMoistRange();
-    getMoistFromSensor();
+    // getMoistFromSensor();
   }, []);
 
   // TODO check moisture value in set range and turn water led
