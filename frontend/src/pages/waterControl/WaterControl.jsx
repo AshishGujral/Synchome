@@ -64,6 +64,21 @@ const WaterControl = () => {
   // user from context
   const {user} = useContext(Context);
 
+  const loadSwitchState = () => {
+    const switchOneStatus =localStorage.getItem("Water");
+    if (switchOneStatus === 'ON') {
+      setValueOne(true);
+    } else {
+      setValueOne(false);
+    }
+  }
+  // get data from localstorage when page reloads
+  window.addEventListener('load', loadSwitchState);
+  useEffect (() =>{
+    loadSwitchState();
+  })
+  
+
   const handleMoistChange = async (event, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) {
       return;
@@ -95,7 +110,7 @@ const WaterControl = () => {
 
   // get moisture data from sensor
   const getMoistFromSensor = async () => {
-    // TODO 
+    // TODO   
     const res = await axios.post("/api/routes/manageSoil", {
       userId: user._id,
     });
@@ -118,7 +133,9 @@ const WaterControl = () => {
 
   // TODO check moisture value in set range and turn water led
   useEffect(
+
     () => {
+      loadSwitchState();
       const interval = setInterval(async () => {
         console.log("Logs every 10 seconds");
         console.log("max val" + moistValue[1]);
@@ -150,6 +167,7 @@ const WaterControl = () => {
             console.log(err);
           }
           setValueOne(true);
+          localStorage.setItem("Water", true);
         } else {
           setLedStatus("OFF");
 
@@ -164,6 +182,7 @@ const WaterControl = () => {
             console.log(err);
           }
           setValueOne(false);
+          localStorage.setItem("Water", false);
         }
       }, 10000);
 
@@ -177,11 +196,12 @@ const WaterControl = () => {
     setValueOne(!valueOne);
 
     const status = valueOne ? "OFF" : "ON";
+    localStorage.setItem("Water", status);
    // TODO 
   try {
       await axios.post("/api/routes/manageSoilLed", {
         ledStatus: status,
-        userId: user.user._id
+        userId: user._id
       });
     } catch (err) {
       console.log(err);

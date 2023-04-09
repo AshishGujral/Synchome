@@ -39,11 +39,27 @@ const MotionControl = () => {
   const [nameOne, setNameOne] = useState("Kitchen");
   const [valueOne, setValueOne] = useState(false);
 
+  const loadSwitchState = () => {
+    const switchOneStatus =localStorage.getItem("Motion");
+    if (switchOneStatus === 'ON') {
+      setValueOne(true);
+    } else {
+      setValueOne(false);
+    }
+  }
+  // get data from localstorage when page reloads
+  window.addEventListener('load', loadSwitchState);
+  
+  useEffect (() =>{
+    loadSwitchState();
+  })
+  
+
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
     console.log("Button clicked");
     const status = valueOne ? "OFF" : "ON";
-
+    localStorage.setItem("Motion", status);
     try {
       await axios.post("/api/routes/manageMotion", {
         userId: user._id,

@@ -61,10 +61,10 @@ const LedControl = () => {
   };
 // Load the state of the switch from localStorage on page load
 const loadSwitchState = () => {
-  const switchOneStatus =localStorage.getItem('switchOne');
-  const switchTwoStatus =localStorage.getItem('switchTwo');
-  const switchThreeStatus =localStorage.getItem('switchThree');
-  const switchAllStatus =localStorage.getItem('switchAll');
+  const switchOneStatus =localStorage.getItem(nameOne);
+  const switchTwoStatus =localStorage.getItem(nameTwo);
+  const switchThreeStatus =localStorage.getItem(nameThree);
+  const switchAllStatus =localStorage.getItem('all');
   if (switchOneStatus === 'ON') {
     setValueOne(true);
   } else {
@@ -73,7 +73,7 @@ const loadSwitchState = () => {
   if(switchTwoStatus == 'ON'){
     setValueTwo(true);
   } else {
-    setValueAll(false);
+    setValueTwo(false);
    
   }
   if(switchThreeStatus == 'ON'){
@@ -245,8 +245,8 @@ useEffect(() => {
       setValueAll(false);
       setValueTwo(true);
       setValueThree(true);
-      localStorage.setItem('switchOne', status);
-      localStorage.setItem('switchAll', status);
+      localStorage.setItem(nameOne, status);
+      localStorage.setItem("all", status);
     }
     
     // check if every switch turns on
@@ -254,7 +254,7 @@ useEffect(() => {
       switchToggleAll();
     }
     try {
-     localStorage.setItem('switchOne', status);
+     localStorage.setItem(nameOne, status);
       await axios.post("/api/routes/manageLed", {
         userId: user._id,
         name: nameOne,
@@ -277,15 +277,15 @@ useEffect(() => {
       setValueAll(false);
       setValueOne(true);
       setValueThree(true);
-      localStorage.setItem('switchTwo', status);
-      localStorage.setItem('switchAll', status);
+      localStorage.setItem(nameTwo, status);
+      localStorage.setItem('all', status);
     }
     // check if every switch turns on it will turn on the all switch
     if (valueOne == true && valueThree == true && status == "ON") {
       switchToggleAll();
     }
     try {
-      localStorage.setItem('switchTwo', status);
+      localStorage.setItem(nameTwo, status);
       await axios.post("/api/routes/manageLed", {
         userId: user._id,
         name: nameTwo,
@@ -308,8 +308,8 @@ useEffect(() => {
       setValueAll(false);
       setValueOne(true);
       setValueTwo(true);
-      localStorage.setItem('switchThree', status);
-      localStorage.setItem('switchAll', status);
+      localStorage.setItem(nameThree, status);
+      localStorage.setItem("all", status);
     }
 
     // check if every switch turns on it will turn on the all switch
@@ -317,7 +317,7 @@ useEffect(() => {
       switchToggleAll();
     }
     try {
-      localStorage.setItem('switchThree', status);
+      localStorage.setItem(nameThree, status);
       await axios.post("/api/routes/manageLed", {
         userId: user._id,
         name: nameThree,
@@ -336,12 +336,12 @@ useEffect(() => {
     setValueAll(!valueAll);
 
     const status = valueAll ? "OFF" : "ON";
-    localStorage.setItem('switchOne', status);
-    localStorage.setItem('switchTwo', status);
-    localStorage.setItem('switchThree', status);
+    localStorage.setItem(nameOne, status);
+    localStorage.setItem(nameTwo, status);
+    localStorage.setItem(nameThree, status);
     console.log("Button clicked", status, "All");
     try {
-      localStorage.setItem('switchAll', status);
+      localStorage.setItem('all', status);
       await axios.post("/api/routes/manageLed", {
         userId: user._id,
         name: "all",

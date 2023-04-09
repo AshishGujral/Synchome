@@ -52,10 +52,27 @@ const AcControlMain = () => {
   const [valueOne, setValueOne] = useState(false);
   const [tempData, setTempData] = useState([]);
 
+  const loadSwitchState = () => {
+    const switchOneStatus =localStorage.getItem("Fan");
+    if (switchOneStatus === 'ON') {
+      setValueOne(true);
+    } else {
+      setValueOne(false);
+    }
+  }
+  // get data from localstorage when page reloads
+  window.addEventListener('load', loadSwitchState);
+  
+  useEffect (() =>{
+    loadSwitchState();
+  })
+  
+
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
 
     const status = valueOne ? "OFF" : "ON";
+    localStorage.setItem("Fan", status);
     // setFanStatus(status);
     // console.log("Kitchen ", status);
     // await callFan();
@@ -129,6 +146,7 @@ const AcControlMain = () => {
         groupedData[date].humi = item.humidity;
       }
     });
+
     const aggregatedData = Object.values(groupedData);
     setTempData(aggregatedData);
     console.log("aggreagte", aggregatedData);
