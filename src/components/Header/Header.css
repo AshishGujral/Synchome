@@ -1,0 +1,32 @@
+.sidebar {
+    background-color: #7A40F2;
+    color: whitesmoke;
+    height: 100%;
+    border-radius: 0px 15px 15px 0px;
+}
+
+.sidebar__icon {
+    color: whitesmoke !important;
+}
+
+.sidebar__item {
+    display: flex;
+    flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-indent: -25%;
+  background-color: #7A40F2 !important;
+  border-radius: 0px 15px 15px 0px !important;
+  color: whitesmoke !important;
+margin-top: 5% !important;
+}
+
+.sidebar__text {
+    visibility: hidden !important;
+}
+
+.sidebar__item:hover  .sidebar__text {
+    visibility: visible !important;
+  transition-delay: 0.1s;
+  }
+

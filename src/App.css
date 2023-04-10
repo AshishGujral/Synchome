@@ -1,0 +1,15 @@
+.app{
+    display: flex;
+}
+
+  .Header {
+    flex-basis: 33.33%;
+  }
+  
+  .Main {
+    flex-basis: 33.33%;
+  }
+  
+  .Footer{
+    flex-basis: 33.33%;
+  }
