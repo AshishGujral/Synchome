@@ -41,10 +41,9 @@ const LedControl = () => {
   const [previousMode, setPreviousMode] = useState(mode);
   const [nameOne, setNameOne] = useState("red");
   const [valueOne, setValueOne] = useState(false);
-  const [secData,setSecData]=useState([]); 
+  const [secData, setSecData] = useState([]);
 
   const [tempData, setTempData] = useState([]);
-
 
   const [nameTwo, setNameTwo] = useState("green");
   const [valueTwo, setValueTwo] = useState(false);
@@ -56,118 +55,121 @@ const LedControl = () => {
 
   const handleSelectChange = (event) => {
     setMode(event.target.value);
-    
-
   };
-// Load the state of the switch from localStorage on page load
-const loadSwitchState = () => {
-  const switchOneStatus =localStorage.getItem(nameOne);
-  const switchTwoStatus =localStorage.getItem(nameTwo);
-  const switchThreeStatus =localStorage.getItem(nameThree);
-  const switchAllStatus =localStorage.getItem('all');
-  if (switchOneStatus === 'ON') {
-    setValueOne(true);
-  } else {
-    setValueOne(false);
-  }
-  if(switchTwoStatus == 'ON'){
-    setValueTwo(true);
-  } else {
-    setValueTwo(false);
-   
-  }
-  if(switchThreeStatus == 'ON'){
-    setValueThree(true);
-  } else {
-    setValueThree(false);
-  }
-  if(switchAllStatus == 'ON'){
-    setValueAll(true);
-  } else {
-    setValueAll(false);
-  }
-  if(localStorage.getItem('mode')!=null){
-    setMode(localStorage.getItem('mode'));
-  }
-
-}
-// get data from localstorage when page reloads
-window.addEventListener('load', loadSwitchState);
-
-useEffect(() => {
-  const fetchData = async () => {
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    const response = await axios.get('http://localhost:3000/backend/routes/leds', { headers });
-    const data = response.data;
-    
-    function updateRemainingSecs(prevSecs, newSec,date) {
-      const existingSecs = prevSecs.find(sec => sec.date === newSec.date);
-      if (existingSecs) {
-        existingSecs.seconds += newSec.seconds;
-      } else {
-        prevSecs.push(newSec);
-      }
-      return prevSecs;
+  // Load the state of the switch from localStorage on page load
+  const loadSwitchState = () => {
+    const switchOneStatus = localStorage.getItem(nameOne);
+    const switchTwoStatus = localStorage.getItem(nameTwo);
+    const switchThreeStatus = localStorage.getItem(nameThree);
+    const switchAllStatus = localStorage.getItem("all");
+    if (switchOneStatus === "ON") {
+      setValueOne(true);
+    } else {
+      setValueOne(false);
     }
-    
-    const groupedData = {};
-    let ondate=0;
-    let offdate=0;
-    data.forEach(item => {
-      const date = item.time;
-      const newDate= new Date(date);
-      const status = item.ledStatus;
-      if(status == "ON"){
-        ondate = newDate;
-      }
-      else{
-        offdate = newDate;
-        const remainingMs = offdate.getTime() - ondate.getTime();
-        if (remainingMs > 0) {
-          const remainingSec = Math.floor(remainingMs / 1000);
-          setSecData(prevSecs => updateRemainingSecs(prevSecs, { seconds: remainingSec,date: offdate.toDateString()}));
+    if (switchTwoStatus == "ON") {
+      setValueTwo(true);
+    } else {
+      setValueTwo(false);
+    }
+    if (switchThreeStatus == "ON") {
+      setValueThree(true);
+    } else {
+      setValueThree(false);
+    }
+    if (switchAllStatus == "ON") {
+      setValueAll(true);
+    } else {
+      setValueAll(false);
+    }
+    if (localStorage.getItem("mode") != null) {
+      setMode(localStorage.getItem("mode"));
+    }
+  };
+  // get data from localstorage when page reloads
+  window.addEventListener("load", loadSwitchState);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      const response = await axios.get(
+        "http://localhost:3000/backend/routes/leds",
+        { headers }
+      );
+      const data = response.data;
+
+      function updateRemainingSecs(prevSecs, newSec, date) {
+        const existingSecs = prevSecs.find((sec) => sec.date === newSec.date);
+        if (existingSecs) {
+          existingSecs.seconds += newSec.seconds;
         } else {
-          console.log("sec",0);
+          prevSecs.push(newSec);
         }
-      }
-      if (!groupedData[date]) {
-        groupedData[date] = {
-          date: date,
-          status: item.ledStatus
-        };
-      } else {
-        groupedData[date].status =item.ledStatus;
+        return prevSecs;
       }
 
-    });
-    setTempData(secData);
-  }
+      const groupedData = {};
+      let ondate = 0;
+      let offdate = 0;
+      data.forEach((item) => {
+        const date = item.time;
+        const newDate = new Date(date);
+        const status = item.ledStatus;
+        if (status == "ON") {
+          ondate = newDate;
+        } else {
+          offdate = newDate;
+          if (ondate && offdate) {
+            const remainingMs = offdate.getTime() - ondate.getTime();
+            if (remainingMs > 0) {
+              const remainingSec = Math.floor(remainingMs / 1000);
+              setSecData((prevSecs) =>
+                updateRemainingSecs(prevSecs, {
+                  seconds: remainingSec,
+                  date: offdate.toDateString(),
+                })
+              );
+            } else {
+              console.log("sec", 0);
+            }
+          }
+        }
+        if (!groupedData[date]) {
+          groupedData[date] = {
+            date: date,
+            status: item.ledStatus,
+          };
+        } else {
+          groupedData[date].status = item.ledStatus;
+        }
+      });
+      setTempData(secData);
+    };
 
-  fetchData();
-}, [secData,]);
+    fetchData();
+  }, [secData]);
 
-useEffect(() => {
-  loadSwitchState();
-  if (secData.length === 0) {
-   fetch();
-  }
+  useEffect(() => {
+    loadSwitchState();
+    if (secData.length === 0) {
+      fetch();
+    }
 
-  console.log("temo",tempData);
-},[secData]);
+    console.log("temo", tempData);
+  }, [secData]);
 
   // using useref hook to track whether the component is mounted or not
   const mountedRef = useRef(false);
   useEffect(() => {
-
     // check if the component is mounted and other condition
     if (
       mountedRef.current &&
       ((previousMode === "BLINK" && mode === "NORMAL") ||
         (previousMode === "NORMAL" && mode === "BLINK"))
     ) {
-      localStorage.setItem('mode', mode);
+      localStorage.setItem("mode", mode);
       let status = "";
       if (valueAll) {
         status = "ON";
@@ -183,8 +185,7 @@ useEffect(() => {
             console.log(err);
           }
         })();
-      }
-      else{
+      } else {
         if (valueOne) {
           status = "ON";
           (async () => {
@@ -248,20 +249,19 @@ useEffect(() => {
       localStorage.setItem(nameOne, status);
       localStorage.setItem("all", status);
     }
-    
+
     // check if every switch turns on
     if (valueThree == true && valueTwo == true && status == "ON") {
       switchToggleAll();
     }
     try {
-     localStorage.setItem(nameOne, status);
+      localStorage.setItem(nameOne, status);
       await axios.post("/api/routes/manageLed", {
         userId: user._id,
         name: nameOne,
         mode: mode,
         status: status,
       });
-     
     } catch (err) {
       console.log(err);
     }
@@ -278,7 +278,7 @@ useEffect(() => {
       setValueOne(true);
       setValueThree(true);
       localStorage.setItem(nameTwo, status);
-      localStorage.setItem('all', status);
+      localStorage.setItem("all", status);
     }
     // check if every switch turns on it will turn on the all switch
     if (valueOne == true && valueThree == true && status == "ON") {
@@ -292,7 +292,6 @@ useEffect(() => {
         mode: mode,
         status: status,
       });
-      
     } catch (err) {
       console.log(err);
     }
@@ -341,7 +340,7 @@ useEffect(() => {
     localStorage.setItem(nameThree, status);
     console.log("Button clicked", status, "All");
     try {
-      localStorage.setItem('all', status);
+      localStorage.setItem("all", status);
       await axios.post("/api/routes/manageLed", {
         userId: user._id,
         name: "all",
@@ -419,8 +418,7 @@ useEffect(() => {
       </MainGrid>
       {/* ----------------------------------------------- */}
 
-      <TopbarGrid className="rightColumn" item xs={2}>
-      </TopbarGrid>
+      <TopbarGrid className="rightColumn" item xs={2}></TopbarGrid>
     </ContainerGrid>
   );
 };
