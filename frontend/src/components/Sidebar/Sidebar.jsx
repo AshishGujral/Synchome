@@ -47,7 +47,7 @@ function Sidebar() {
   const getList = () => (
     <div className="sidebar" onClick={() => setOpen(false)}>
       {data.map((item, index) => (
-        <Link to={item.link}>
+        <Link key={index}to={item.link}>
           <ListItem className="sidebar__item" button key={index}>
             <motion.i whileHover={{ scale: 1.3 }}>
               <ListItemIcon className="sidebar__icon">{item.icon}</ListItemIcon>

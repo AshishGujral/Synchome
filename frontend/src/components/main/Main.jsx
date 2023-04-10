@@ -87,7 +87,7 @@ const App = () => {
                 </div>
               </div>
               <div className="fuzzyCloudyWeatherParent">
-              <i class={weatherIcon}></i>  
+              <i className={weatherIcon}></i>  
                 <div className="fuzzyCloudyWeather">{weatherCond}</div>
               </div>
             </div>

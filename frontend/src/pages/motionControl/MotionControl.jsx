@@ -61,9 +61,9 @@ const MotionControl = () => {
       </SidebarGrid>
       {/* ---------------------------------------------------------- */}
       <MainGrid item className="water__herosection" xs={8}>
-        {infoData.map(({ time, accessedBy, waterConsumed }) => {
+        {infoData.map(({ time, accessedBy, waterConsumed, deviceId }) => {
           return (
-            <div className="water__wrapper">
+            <div className="water__wrapper" key={deviceId}>
               <div className="water__switches">
                 <FourColumnDiv
                   switches={[
@@ -83,7 +83,7 @@ const MotionControl = () => {
                 </div>
               </div>
               <div className="water__info" id="water__info">
-                <label for="water__info">Location: </label>
+                <label htmlFor="water__info">Location: </label>
                 <h4>Last triggred:</h4>
                 {/* insert data */}
                 <h5>{`${time}hrs ago`}</h5>

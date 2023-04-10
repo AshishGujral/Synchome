@@ -91,8 +91,6 @@ const AcControlMain = () => {
     const res = await axios.get("api/routes/saveRange");
     setTempValue([res.data.tempMin, res.data.tempMax]);
     setHumValue([res.data.humMin, res.data.humMax]);
-
-    console.log("setting range values");
   };
 
   const fetchData = async () => {
@@ -142,11 +140,11 @@ const AcControlMain = () => {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      console.log("Logs every 10 seconds");
-      console.log(
-        "max temp val" + tempValue[1] + "min temp val" + tempValue[0]
-      );
-      console.log("max hum val" + humValue[1] + "min temp val" + humValue[0]);
+      // console.log("Logs every 10 seconds");
+      // console.log(
+      //   "max temp val" + tempValue[1] + "min temp val" + tempValue[0]
+      // );
+      // console.log("max hum val" + humValue[1] + "min temp val" + humValue[0]);
       getTempAndHum();
       // await getTempAndHum();
       try {
@@ -163,8 +161,9 @@ const AcControlMain = () => {
         (humValue[0] <= parseInt(sensorData.humidity) &&
           parseInt(sensorData.humidity) <= humValue[1])
       ) {
-        console.log("calling if fan api");
+        // console.log("calling if fan api");
         setFanStatus("ON");
+        localStorage.setItem("Fan", "ON");
         console.log(fanStatus);
         // await callFan();
         try {
@@ -179,9 +178,10 @@ const AcControlMain = () => {
         setValueOne(true);
       } else {
         setFanStatus("OFF");
-        console.log(fanStatus);
+        localStorage.setItem("Fan", "OFF");
+        // console.log(fanStatus);
 
-        console.log("calling else fan api");
+        // console.log("calling else fan api");
 
         try {
           await axios.post("/api/routes/manageFan", {

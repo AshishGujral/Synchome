@@ -64,6 +64,86 @@ const WaterControl = () => {
   // user from context
   const { user } = useContext(Context);
 
+  const [secData, setSecData] = useState([]);
+
+  const [tempData, setTempData] = useState([]);
+
+  const loadSwitchState = () => {
+    const switchOneStatus = localStorage.getItem("Water");
+    if (switchOneStatus === "ON") {
+      setValueOne(true);
+    } else {
+      setValueOne(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      const response = await axios.get(
+        "http://localhost:3000/backend/routes/soil",
+        { headers }
+      );
+      const data = response.data;
+      function updateRemainingSecs(prevSecs, newSec) {
+        const existingSecs = prevSecs.find((sec) => sec.date === newSec.date);
+        if (existingSecs) {
+          existingSecs.seconds += newSec.seconds;
+        } else {
+          prevSecs.push(newSec);
+        }
+        return prevSecs;
+      }
+
+      const groupedData = {};
+      let ondate = 0;
+      let offdate = 0;
+      data.forEach((item) => {
+        const date = item.time;
+        const newDate = new Date(date);
+        const status = item.ledStatus;
+        if (status == "ON") {
+          ondate = newDate;
+        } else {
+          offdate = newDate;
+          if (ondate && offdate) {
+            const remainingMs = offdate.getTime() - ondate.getTime();
+            if (remainingMs > 0) {
+              const remainingSec = Math.floor(remainingMs / 1000);
+              setSecData((prevSecs) =>
+                updateRemainingSecs(prevSecs, {
+                  seconds: remainingSec,
+                  date: offdate.toDateString(),
+                })
+              );
+            } else {
+              console.log("sec", 0);
+            }
+          }
+        }
+        if (!groupedData[date]) {
+          groupedData[date] = {
+            date: date,
+            status: item.ledStatus,
+          };
+        } else {
+          groupedData[date].status = item.ledStatus;
+        }
+      });
+      setTempData(secData);
+    };
+
+    fetchData();
+  }, [secData]);
+  // get data from localstorage when page reloads
+  window.addEventListener("load", loadSwitchState);
+
+  useEffect(() => {
+    loadSwitchState();
+  });
+
   const handleMoistChange = async (event, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) {
       return;
@@ -107,8 +187,6 @@ const WaterControl = () => {
     // TODO 
     const res = await axios.get("api/routes/saveSoilRange");
     setMoistValue([res.data.moistMin, res.data.moistMax]);
-
-    console.log("setting range values");
   };
 
   useEffect(() => {
@@ -119,9 +197,6 @@ const WaterControl = () => {
   // TODO check moisture value in set range and turn water led
   useEffect(() => {
     const interval = setInterval(async () => {
-      console.log("Logs every 10 seconds");
-      console.log("max val" + moistValue[1]);
-      console.log("min val" + moistValue[0]);
       getMoistFromSensor();
       // await getMoistFromSensor();
       try {
@@ -138,7 +213,6 @@ const WaterControl = () => {
       ) {
         console.log("calling if led soil api");
         setLedStatus("ON");
-        // console.log(fanStatus);
         // await callFan();
         try {
           await axios.post("/api/routes/manageSoilLed", {
@@ -151,9 +225,6 @@ const WaterControl = () => {
         setValueOne(true);
       } else {
         setLedStatus("OFF");
-
-          console.log("calling else led soil api");
-
         try {
           await axios.post("/api/routes/manageSoilLed", {
             userId: user._id,
@@ -194,9 +265,9 @@ const WaterControl = () => {
       </SidebarGrid>
       {/* ---------------------------------------------------------- */}
       <MainGrid item className="water__herosection" xs={8}>
-        {infoData.map(({ time, accessedBy, waterConsumed }) => {
+        {infoData.map(({ time, accessedBy, waterConsumed,deviceId}) => {
           return (
-            <div className="water__wrapper">
+            <div className="water__wrapper" key={deviceId} >
               <div className="water__switches">
                 <FourColumnDiv
                   switches={[
@@ -209,7 +280,7 @@ const WaterControl = () => {
                     },
                   ]}
                 />
-                <div className="Controls">
+                <div className="Controls" >
                   Controls
                   <div className="controls-content" id="controls">
                     <Box sx={{ width: 300, display: "flex", gap: "1em" }}>
@@ -226,7 +297,7 @@ const WaterControl = () => {
                     </Box>
                     <Box>
                       <Typography variant="h5">
-                        Humidity:{sensorData.humidity}
+                        Moisture:{sensorData.moisture}
                       </Typography>
                     </Box>
                   </div>
@@ -238,7 +309,7 @@ const WaterControl = () => {
                 </div>
               </div>
               <div className="water__info" id="water__info">
-                <label for="water__info">Yard</label>
+                <label htmlFor="water__info">Yard</label>
                 <h4>Last watered:</h4>
                 {/* insert data */}
                 <h5>{`${time}hrs ago by ${accessedBy}`}</h5>

@@ -141,21 +141,50 @@ useEffect(() => {
         groupedData[date].status =item.ledStatus;
       }
 
-    });
-    setTempData(secData);
-  }
+      const groupedData = {};
+      let ondate = 0;
+      let offdate = 0;
+      data.forEach((item) => {
+        const date = item.time;
+        const newDate = new Date(date);
+        const status = item.ledStatus;
+        if (status == "ON") {
+          ondate = newDate;
+        } else {
+          offdate = newDate;
+          if (ondate && offdate) {
+            const remainingMs = offdate.getTime() - ondate.getTime();
+            if (remainingMs > 0) {
+              const remainingSec = Math.floor(remainingMs / 1000);
+              setSecData((prevSecs) =>
+                updateRemainingSecs(prevSecs, {
+                  seconds: remainingSec,
+                  date: offdate.toDateString(),
+                })
+              );
+            } else {
+              // console.log("sec", 0);
+            }
+          }
+        }
+        if (!groupedData[date]) {
+          groupedData[date] = {
+            date: date,
+            status: item.ledStatus,
+          };
+        } else {
+          groupedData[date].status = item.ledStatus;
+        }
+      });
+      setTempData(secData);
+    };
 
   fetchData();
-}, [secData,]);
+}, [secData,])
+  useEffect(() => {
+    loadSwitchState();
 
-useEffect(() => {
-  loadSwitchState();
-  if (secData.length === 0) {
-   fetch();
-  }
-
-  console.log("temo",tempData);
-},[secData]);
+  }, [secData]);
 
   // using useref hook to track whether the component is mounted or not
   const mountedRef = useRef(false);
@@ -270,8 +299,6 @@ useEffect(() => {
   const switchToggleTwo = async () => {
     setValueTwo(!valueTwo);
     const status = valueTwo ? "OFF" : "ON";
-
-    console.log("Button clicked", status, "two");
     // Check the status of the switch and turn off all switche tab if it is "OFF"
     if (status == "OFF" && valueAll == true) {
       setValueAll(false);
@@ -302,7 +329,6 @@ useEffect(() => {
     setValueThree(!valueThree);
     const status = valueThree ? "OFF" : "ON";
 
-    console.log("Button clicked", status, "three");
     // Check the status of the switch and turn off all switche tab if it is "OFF"
     if (status == "OFF" && valueAll == true) {
       setValueAll(false);
@@ -336,10 +362,9 @@ useEffect(() => {
     setValueAll(!valueAll);
 
     const status = valueAll ? "OFF" : "ON";
-    localStorage.setItem('switchOne', status);
-    localStorage.setItem('switchTwo', status);
-    localStorage.setItem('switchThree', status);
-    console.log("Button clicked", status, "All");
+    localStorage.setItem(nameOne, status);
+    localStorage.setItem(nameTwo, status);
+    localStorage.setItem(nameThree, status);
     try {
       localStorage.setItem('switchAll', status);
       await axios.post("/api/routes/manageLed", {
