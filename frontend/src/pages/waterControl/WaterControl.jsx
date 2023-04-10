@@ -62,90 +62,7 @@ const WaterControl = () => {
   // sensor data states
   const [sensorData, setSensorData] = useState("");
   // user from context
-  const { user } = useContext(Context);
-  const [secData, setSecData] = useState([]);
-
-  const [tempData, setTempData] = useState([]);
-
-  const loadSwitchState = () => {
-    const switchOneStatus = localStorage.getItem("Water");
-    if (switchOneStatus === "ON") {
-      setValueOne(true);
-    } else {
-      setValueOne(false);
-    }
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const headers = {
-        "Content-Type": "application/json",
-      };
-      const response = await axios.get(
-        "http://localhost:3000/backend/routes/soil",
-        { headers }
-      );
-      const data = response.data;
-      function updateRemainingSecs(prevSecs, newSec) {
-        const existingSecs = prevSecs.find((sec) => sec.date === newSec.date);
-        if (existingSecs) {
-          existingSecs.seconds += newSec.seconds;
-        } else {
-          prevSecs.push(newSec);
-        }
-        return prevSecs;
-      }
-
-      const groupedData = {};
-      let ondate = 0;
-      let offdate = 0;
-      console.log("data", data);
-      data.forEach((item) => {
-        console.log(item);
-        const date = item.time;
-        const newDate = new Date(date);
-        const status = item.ledStatus;
-        console.log("Status", status);
-        if (status == "ON") {
-          ondate = newDate;
-        } else {
-          offdate = newDate;
-          if (ondate && offdate) {
-            const remainingMs = offdate.getTime() - ondate.getTime();
-            if (remainingMs > 0) {
-              const remainingSec = Math.floor(remainingMs / 1000);
-              setSecData((prevSecs) =>
-                updateRemainingSecs(prevSecs, {
-                  seconds: remainingSec,
-                  date: offdate.toDateString(),
-                })
-              );
-            } else {
-              console.log("sec", 0);
-            }
-          }
-        }
-        if (!groupedData[date]) {
-          groupedData[date] = {
-            date: date,
-            status: item.ledStatus,
-          };
-        } else {
-          groupedData[date].status = item.ledStatus;
-        }
-      });
-      setTempData(secData);
-      console.log("temp", secData);
-    };
-
-    fetchData();
-  }, [secData]);
-  // get data from localstorage when page reloads
-  window.addEventListener("load", loadSwitchState);
-
-  useEffect(() => {
-    loadSwitchState();
-  });
+  const {user} = useContext(Context);
 
   const handleMoistChange = async (event, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) {
@@ -200,54 +117,55 @@ const WaterControl = () => {
   }, []);
 
   // TODO check moisture value in set range and turn water led
-  useEffect(() => {
-    loadSwitchState();
-    const interval = setInterval(async () => {
-      console.log("Logs every 10 seconds");
-      console.log("max val" + moistValue[1]);
-      console.log("min val" + moistValue[0]);
-      getMoistFromSensor();
-      // await getMoistFromSensor();
-      try {
-        const res = await axios.post("/api/routes/manageSoil", {
-          userId: user._id,
-        });
-        setSensorData(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-      if (moistValue[0] <= parseInt("30") && parseInt("30") <= moistValue[1]) {
-        console.log("calling if led soil api");
-        setLedStatus("ON");
-        // console.log(fanStatus);
-        // await callFan();
+  useEffect(
+    () => {
+      const interval = setInterval(async () => {
+        console.log("Logs every 10 seconds");
+        console.log("max val" + moistValue[1]);
+        console.log("min val" + moistValue[0]);
+        getMoistFromSensor();
+        // await getMoistFromSensor();
         try {
-          await axios.post("/api/routes/manageSoilLed", {
+          const res = await axios.post("/api/routes/manageSoil", {
             userId: user._id,
-            status: "ON",
           });
+          setSensorData(res.data);
         } catch (err) {
           console.log(err);
         }
-        setValueOne(true);
-        localStorage.setItem("Water", true);
-      } else {
-        setLedStatus("OFF");
+        if (
+          (moistValue[0] <= parseInt("30") &&
+          parseInt("30") <= moistValue[1])
+        ) {
+          console.log("calling if led soil api");
+          setLedStatus("ON");
+          // console.log(fanStatus);
+          // await callFan();
+          try {
+            await axios.post("/api/routes/manageSoilLed", {
+              userId: user._id,
+              status: "ON",
+            });
+          } catch (err) {
+            console.log(err);
+          }
+          setValueOne(true);
+        } else {
+          setLedStatus("OFF");
 
         console.log("calling else led soil api");
 
-        try {
-          await axios.post("/api/routes/manageSoilLed", {
-            userId: user._id,
-            status: "OFF",
-          });
-        } catch (err) {
-          console.log(err);
+          try {
+            await axios.post("/api/routes/manageSoilLed", {
+              userId: user._id,
+              status: "OFF",
+            });
+          } catch (err) {
+            console.log(err);
+          }
+          setValueOne(false);
         }
-        setValueOne(false);
-        localStorage.setItem("Water", false);
-      }
-    }, 10000);
+      }, 10000);
 
     return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
   }, [moistValue[1], moistValue[0], valueOne, sensorData]);
@@ -256,12 +174,11 @@ const WaterControl = () => {
     setValueOne(!valueOne);
 
     const status = valueOne ? "OFF" : "ON";
-    localStorage.setItem("Water", status);
-    // TODO
-    try {
+   // TODO 
+  try {
       await axios.post("/api/routes/manageSoilLed", {
         ledStatus: status,
-        userId: user._id,
+        userId: user.user._id
       });
     } catch (err) {
       console.log(err);
