@@ -132,7 +132,7 @@ const LedControl = () => {
                 })
               );
             } else {
-              console.log("sec", 0);
+              // console.log("sec", 0);
             }
           }
         }
@@ -153,11 +153,7 @@ const LedControl = () => {
 
   useEffect(() => {
     loadSwitchState();
-    if (secData.length === 0) {
-      fetch();
-    }
 
-    console.log("temo", tempData);
   }, [secData]);
 
   // using useref hook to track whether the component is mounted or not
@@ -270,8 +266,6 @@ const LedControl = () => {
   const switchToggleTwo = async () => {
     setValueTwo(!valueTwo);
     const status = valueTwo ? "OFF" : "ON";
-
-    console.log("Button clicked", status, "two");
     // Check the status of the switch and turn off all switche tab if it is "OFF"
     if (status == "OFF" && valueAll == true) {
       setValueAll(false);
@@ -301,7 +295,6 @@ const LedControl = () => {
     setValueThree(!valueThree);
     const status = valueThree ? "OFF" : "ON";
 
-    console.log("Button clicked", status, "three");
     // Check the status of the switch and turn off all switche tab if it is "OFF"
     if (status == "OFF" && valueAll == true) {
       setValueAll(false);
@@ -338,7 +331,6 @@ const LedControl = () => {
     localStorage.setItem(nameOne, status);
     localStorage.setItem(nameTwo, status);
     localStorage.setItem(nameThree, status);
-    console.log("Button clicked", status, "All");
     try {
       localStorage.setItem("all", status);
       await axios.post("/api/routes/manageLed", {

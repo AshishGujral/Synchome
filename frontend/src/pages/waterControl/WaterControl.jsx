@@ -99,13 +99,10 @@ const WaterControl = () => {
       const groupedData = {};
       let ondate = 0;
       let offdate = 0;
-      console.log("data", data);
       data.forEach((item) => {
-        console.log(item);
         const date = item.time;
         const newDate = new Date(date);
         const status = item.ledStatus;
-        console.log("Status", status);
         if (status == "ON") {
           ondate = newDate;
         } else {
@@ -135,7 +132,6 @@ const WaterControl = () => {
         }
       });
       setTempData(secData);
-      console.log("temp", secData);
     };
 
     fetchData();
@@ -190,8 +186,6 @@ const WaterControl = () => {
     // TODO
     const res = await axios.get("api/routes/saveSoilRange");
     setMoistValue([res.data.moistMin, res.data.moistMax]);
-
-    console.log("setting range values");
   };
 
   useEffect(() => {
@@ -203,9 +197,6 @@ const WaterControl = () => {
   useEffect(() => {
     loadSwitchState();
     const interval = setInterval(async () => {
-      console.log("Logs every 10 seconds");
-      console.log("max val" + moistValue[1]);
-      console.log("min val" + moistValue[0]);
       getMoistFromSensor();
       // await getMoistFromSensor();
       try {
@@ -216,8 +207,7 @@ const WaterControl = () => {
       } catch (err) {
         console.log(err);
       }
-      if (moistValue[0] <= parseInt("30") && parseInt("30") <= moistValue[1]) {
-        console.log("calling if led soil api");
+      if (moistValue[0] <= parseInt(sensorData.moisture) && parseInt(sensorData.mositure) <= moistValue[1]) {
         setLedStatus("ON");
         // console.log(fanStatus);
         // await callFan();
@@ -233,8 +223,6 @@ const WaterControl = () => {
         localStorage.setItem("Water", true);
       } else {
         setLedStatus("OFF");
-
-        console.log("calling else led soil api");
 
         try {
           await axios.post("/api/routes/manageSoilLed", {
@@ -275,9 +263,9 @@ const WaterControl = () => {
       </SidebarGrid>
       {/* ---------------------------------------------------------- */}
       <MainGrid item className="water__herosection" xs={8}>
-        {infoData.map(({ time, accessedBy, waterConsumed }) => {
+        {infoData.map(({ time, accessedBy, waterConsumed,deviceId}) => {
           return (
-            <div className="water__wrapper">
+            <div className="water__wrapper" key={deviceId} >
               <div className="water__switches">
                 <FourColumnDiv
                   switches={[
@@ -290,7 +278,7 @@ const WaterControl = () => {
                     },
                   ]}
                 />
-                <div className="Controls">
+                <div className="Controls" >
                   Controls
                   <div className="controls-content" id="controls">
                     <Box sx={{ width: 300, display: "flex", gap: "1em" }}>
@@ -319,7 +307,7 @@ const WaterControl = () => {
               </div>
 
               <div className="water__info" id="water__info">
-                <label for="water__info">Yard</label>
+                <label htmlFor="water__info">Yard</label>
                 <h4>Last watered:</h4>
                 {/* insert data */}
                 <h5>{`${time}hrs ago by ${accessedBy}`}</h5>
