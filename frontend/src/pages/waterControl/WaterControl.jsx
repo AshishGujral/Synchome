@@ -56,10 +56,10 @@ const WaterControl = () => {
   const [nameOne, setNameOne] = useState("Yard");
   const [valueOne, setValueOne] = useState(false);
 
-  const [ledStatus, setLedStatus] = useState("OFF");
-  // slider states
+  const [ledStatus, setLedStatus] = useState("OFF")
+// slider states
   const [moistValue, setmoistValue] = React.useState([20, 37]);
-  // sensor data states
+// sensor data states
   const [sensorData, setSensorData] = useState("");
   // user from context
   const {user} = useContext(Context);
@@ -82,7 +82,7 @@ const WaterControl = () => {
     }
 
     try {
-      // TODO
+      // TODO 
       await axios.put("/api/routes/saveSoilRange", {
         moistMax: moistValue[1],
         moistMin: moistValue[0],
@@ -95,7 +95,7 @@ const WaterControl = () => {
 
   // get moisture data from sensor
   const getMoistFromSensor = async () => {
-    // TODO
+    // TODO 
     const res = await axios.post("/api/routes/manageSoil", {
       userId: user._id,
     });
@@ -104,7 +104,7 @@ const WaterControl = () => {
 
   // set Moisture Range from DB
   const setMoistRange = async () => {
-    // TODO
+    // TODO 
     const res = await axios.get("api/routes/saveSoilRange");
     setMoistValue([res.data.moistMin, res.data.moistMax]);
 
@@ -112,7 +112,7 @@ const WaterControl = () => {
   };
 
   useEffect(() => {
-    setMoistRange();
+  setMoistRange();
     // getMoistFromSensor();
   }, []);
 
@@ -153,7 +153,7 @@ const WaterControl = () => {
         } else {
           setLedStatus("OFF");
 
-        console.log("calling else led soil api");
+          console.log("calling else led soil api");
 
           try {
             await axios.post("/api/routes/manageSoilLed", {
@@ -167,8 +167,11 @@ const WaterControl = () => {
         }
       }, 10000);
 
-    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
-  }, [moistValue[1], moistValue[0], valueOne, sensorData]);
+      return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+    },
+    [moistValue[1], moistValue[0], valueOne, sensorData],
+    
+  );
 
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
@@ -249,7 +252,8 @@ const WaterControl = () => {
       </MainGrid>
       {/* ----------------------------------------------- */}
 
-      <TopbarGrid className="rightColumn" item xs={3}></TopbarGrid>
+      <TopbarGrid className="rightColumn" item xs={3}>
+      </TopbarGrid>
     </ContainerGrid>
   );
 };
