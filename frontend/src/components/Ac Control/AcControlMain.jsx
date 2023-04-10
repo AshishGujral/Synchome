@@ -181,6 +181,7 @@ const AcControlMain = () => {
       ) {
         // console.log("calling if fan api");
         setFanStatus("ON");
+        localStorage.setItem("Fan", "ON");
         console.log(fanStatus);
         // await callFan();
         try {
@@ -195,6 +196,7 @@ const AcControlMain = () => {
         setValueOne(true);
       } else {
         setFanStatus("OFF");
+        localStorage.setItem("Fan", "OFF");
         // console.log(fanStatus);
 
         // console.log("calling else fan api");

@@ -209,7 +209,6 @@ const WaterControl = () => {
       }
       if (moistValue[0] <= parseInt(sensorData.moisture) && parseInt(sensorData.mositure) <= moistValue[1]) {
         setLedStatus("ON");
-        // console.log(fanStatus);
         // await callFan();
         try {
           await axios.post("/api/routes/manageSoilLed", {
@@ -295,7 +294,7 @@ const WaterControl = () => {
                     </Box>
                     <Box>
                       <Typography variant="h5">
-                        Humidity:{sensorData.humidity}
+                        Moisture:{sensorData.moisture}
                       </Typography>
                     </Box>
                   </div>
