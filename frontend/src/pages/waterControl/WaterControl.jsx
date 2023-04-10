@@ -62,7 +62,7 @@ const WaterControl = () => {
   // sensor data states
   const [sensorData, setSensorData] = useState("");
   // user from context
-  const { user } = useContext(Context);
+  const {user} = useContext(Context);
 
   const handleMoistChange = async (event, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) {
@@ -117,54 +117,55 @@ const WaterControl = () => {
   }, []);
 
   // TODO check moisture value in set range and turn water led
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      console.log("Logs every 10 seconds");
-      console.log("max val" + moistValue[1]);
-      console.log("min val" + moistValue[0]);
-      getMoistFromSensor();
-      // await getMoistFromSensor();
-      try {
-        const res = await axios.post("/api/routes/manageSoil", {
-          userId: user._id,
-        });
-        setSensorData(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-      if (
-        moistValue[0] <= parseInt(sensorData.moisture) &&
-        parseInt(sensorData.moisture) <= moistValue[1]
-      ) {
-        console.log("calling if led soil api");
-        setLedStatus("ON");
-        // console.log(fanStatus);
-        // await callFan();
+  useEffect(
+    () => {
+      const interval = setInterval(async () => {
+        console.log("Logs every 10 seconds");
+        console.log("max val" + moistValue[1]);
+        console.log("min val" + moistValue[0]);
+        getMoistFromSensor();
+        // await getMoistFromSensor();
         try {
-          await axios.post("/api/routes/manageSoilLed", {
+          const res = await axios.post("/api/routes/manageSoil", {
             userId: user._id,
-            status: "ON",
           });
+          setSensorData(res.data);
         } catch (err) {
           console.log(err);
         }
-        setValueOne(true);
-      } else {
-        setLedStatus("OFF");
+        if (
+          (moistValue[0] <= parseInt("30") &&
+          parseInt("30") <= moistValue[1])
+        ) {
+          console.log("calling if led soil api");
+          setLedStatus("ON");
+          // console.log(fanStatus);
+          // await callFan();
+          try {
+            await axios.post("/api/routes/manageSoilLed", {
+              userId: user._id,
+              status: "ON",
+            });
+          } catch (err) {
+            console.log(err);
+          }
+          setValueOne(true);
+        } else {
+          setLedStatus("OFF");
 
         console.log("calling else led soil api");
 
-        try {
-          await axios.post("/api/routes/manageSoilLed", {
-            userId: user._id,
-            status: "OFF",
-          });
-        } catch (err) {
-          console.log(err);
+          try {
+            await axios.post("/api/routes/manageSoilLed", {
+              userId: user._id,
+              status: "OFF",
+            });
+          } catch (err) {
+            console.log(err);
+          }
+          setValueOne(false);
         }
-        setValueOne(false);
-      }
-    }, 10000);
+      }, 10000);
 
     return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
   }, [moistValue[1], moistValue[0], valueOne, sensorData]);
@@ -173,11 +174,11 @@ const WaterControl = () => {
     setValueOne(!valueOne);
 
     const status = valueOne ? "OFF" : "ON";
-    // TODO
-    try {
+   // TODO 
+  try {
       await axios.post("/api/routes/manageSoilLed", {
         ledStatus: status,
-        userId: user.user._id,
+        userId: user.user._id
       });
     } catch (err) {
       console.log(err);
@@ -229,11 +230,11 @@ const WaterControl = () => {
                   </div>
                 </div>
               </div>
+              <ChartExpense tempData={tempData} />
               <div className="water__chartInfo">
-                <div className="water__powerConsumed">
-                  {/*<ChartExpense />*/}
-                </div>
+                <div className="water__powerConsumed"></div>
               </div>
+
               <div className="water__info" id="water__info">
                 <label for="water__info">Yard</label>
                 <h4>Last watered:</h4>

@@ -270,6 +270,27 @@ router.get("/leds",async (req, res) => {
   }
 });
 
+// Get Data from Motion
+router.get("/motion",async (req, res) => {
+  try {
+    const data = await MOTION.find();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+// Get Data from SoilLeds
+router.get("/soil",async (req, res) => {
+  try {
+    const data = await SOILLED.find();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 export default router;
 
 
