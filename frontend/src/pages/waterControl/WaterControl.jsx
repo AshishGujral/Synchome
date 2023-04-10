@@ -56,13 +56,13 @@ const WaterControl = () => {
   const [nameOne, setNameOne] = useState("Yard");
   const [valueOne, setValueOne] = useState(false);
 
-  const [ledStatus, setLedStatus] = useState("OFF")
-// slider states
+  const [ledStatus, setLedStatus] = useState("OFF");
+  // slider states
   const [moistValue, setmoistValue] = React.useState([20, 37]);
-// sensor data states
+  // sensor data states
   const [sensorData, setSensorData] = useState("");
   // user from context
-  const {user} = useContext(Context);
+  const { user } = useContext(Context);
 
   const handleMoistChange = async (event, newValue, activeThumb) => {
     if (!Array.isArray(newValue)) {
@@ -82,7 +82,7 @@ const WaterControl = () => {
     }
 
     try {
-      // TODO 
+      // TODO
       await axios.put("/api/routes/saveSoilRange", {
         moistMax: moistValue[1],
         moistMin: moistValue[0],
@@ -95,7 +95,7 @@ const WaterControl = () => {
 
   // get moisture data from sensor
   const getMoistFromSensor = async () => {
-    // TODO 
+    // TODO
     const res = await axios.post("/api/routes/manageSoil", {
       userId: user._id,
     });
@@ -104,7 +104,7 @@ const WaterControl = () => {
 
   // set Moisture Range from DB
   const setMoistRange = async () => {
-    // TODO 
+    // TODO
     const res = await axios.get("api/routes/saveSoilRange");
     setMoistValue([res.data.moistMin, res.data.moistMax]);
 
@@ -112,76 +112,72 @@ const WaterControl = () => {
   };
 
   useEffect(() => {
-  setMoistRange();
+    setMoistRange();
     // getMoistFromSensor();
   }, []);
 
   // TODO check moisture value in set range and turn water led
-  useEffect(
-    () => {
-      const interval = setInterval(async () => {
-        console.log("Logs every 10 seconds");
-        console.log("max val" + moistValue[1]);
-        console.log("min val" + moistValue[0]);
-        getMoistFromSensor();
-        // await getMoistFromSensor();
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      console.log("Logs every 10 seconds");
+      console.log("max val" + moistValue[1]);
+      console.log("min val" + moistValue[0]);
+      getMoistFromSensor();
+      // await getMoistFromSensor();
+      try {
+        const res = await axios.post("/api/routes/manageSoil", {
+          userId: user._id,
+        });
+        setSensorData(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+      if (
+        moistValue[0] <= parseInt(sensorData.moisture) &&
+        parseInt(sensorData.moisture) <= moistValue[1]
+      ) {
+        console.log("calling if led soil api");
+        setLedStatus("ON");
+        // console.log(fanStatus);
+        // await callFan();
         try {
-          const res = await axios.post("/api/routes/manageSoil", {
+          await axios.post("/api/routes/manageSoilLed", {
             userId: user._id,
+            status: "ON",
           });
-          setSensorData(res.data);
         } catch (err) {
           console.log(err);
         }
-        if (
-          (moistValue[0] <= parseInt("30") &&
-          parseInt("30") <= moistValue[1])
-        ) {
-          console.log("calling if led soil api");
-          setLedStatus("ON");
-          // console.log(fanStatus);
-          // await callFan();
-          try {
-            await axios.post("/api/routes/manageSoilLed", {
-              userId: user._id,
-              status: "ON",
-            });
-          } catch (err) {
-            console.log(err);
-          }
-          setValueOne(true);
-        } else {
-          setLedStatus("OFF");
+        setValueOne(true);
+      } else {
+        setLedStatus("OFF");
 
-          console.log("calling else led soil api");
+        console.log("calling else led soil api");
 
-          try {
-            await axios.post("/api/routes/manageSoilLed", {
-              userId: user._id,
-              status: "OFF",
-            });
-          } catch (err) {
-            console.log(err);
-          }
-          setValueOne(false);
+        try {
+          await axios.post("/api/routes/manageSoilLed", {
+            userId: user._id,
+            status: "OFF",
+          });
+        } catch (err) {
+          console.log(err);
         }
-      }, 10000);
+        setValueOne(false);
+      }
+    }, 10000);
 
-      return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
-    },
-    [moistValue[1], moistValue[0], valueOne, sensorData],
-    
-  );
+    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+  }, [moistValue[1], moistValue[0], valueOne, sensorData]);
 
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
 
     const status = valueOne ? "OFF" : "ON";
-   // TODO 
-  try {
+    // TODO
+    try {
       await axios.post("/api/routes/manageSoilLed", {
         ledStatus: status,
-        userId: user.user._id
+        userId: user.user._id,
       });
     } catch (err) {
       console.log(err);
@@ -252,8 +248,7 @@ const WaterControl = () => {
       </MainGrid>
       {/* ----------------------------------------------- */}
 
-      <TopbarGrid className="rightColumn" item xs={3}>
-      </TopbarGrid>
+      <TopbarGrid className="rightColumn" item xs={3}></TopbarGrid>
     </ContainerGrid>
   );
 };
