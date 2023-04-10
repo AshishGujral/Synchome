@@ -39,92 +39,11 @@ const MotionControl = () => {
   const [nameOne, setNameOne] = useState("Kitchen");
   const [valueOne, setValueOne] = useState(false);
 
-  const [secData, setSecData] = useState([]);
-
-  const [tempData, setTempData] = useState([]);
-  const loadSwitchState = () => {
-    const switchOneStatus = localStorage.getItem("Motion");
-    if (switchOneStatus === "ON") {
-      setValueOne(true);
-    } else {
-      setValueOne(false);
-    }
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const headers = {
-        "Content-Type": "application/json",
-      };
-      const response = await axios.get(
-        "http://localhost:3000/backend/routes/motion",
-        { headers }
-      );
-      const data = response.data;
-      function updateRemainingSecs(prevSecs, newSec) {
-        const existingSecs = prevSecs.find((sec) => sec.date === newSec.date);
-        if (existingSecs) {
-          existingSecs.seconds += newSec.seconds;
-        } else {
-          prevSecs.push(newSec);
-        }
-        return prevSecs;
-      }
-
-      const groupedData = {};
-      let ondate = 0;
-      let offdate = 0;
-      data.forEach((item) => {
-        const date = item.time;
-        const newDate = new Date(date);
-        const status = item.status;
-        console.log("Status", status);
-        if (status == "ON") {
-          ondate = newDate;
-        } else {
-          offdate = newDate;
-          if (ondate && offdate) {
-            const remainingMs = offdate.getTime() - ondate.getTime();
-            if (remainingMs > 0) {
-              const remainingSec = Math.floor(remainingMs / 1000);
-              setSecData((prevSecs) =>
-                updateRemainingSecs(prevSecs, {
-                  seconds: remainingSec,
-                  date: offdate.toDateString(),
-                })
-              );
-            } else {
-              console.log("sec", 0);
-            }
-          }
-        }
-        if (!groupedData[date]) {
-          groupedData[date] = {
-            date: date,
-            status: item.status,
-          };
-        } else {
-          groupedData[date].status = item.status;
-        }
-      });
-      setTempData(secData);
-      console.log("temp", secData);
-    };
-
-    fetchData();
-  }, [secData]);
-  // get data from localstorage when page reloads
-  window.addEventListener("load", loadSwitchState);
-
-  useEffect(() => {
-    loadSwitchState();
-  });
-
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
     console.log("Button clicked");
     const status = valueOne ? "OFF" : "ON";
-    localStorage.setItem("Motion", status);
+
     try {
       await axios.post("/api/routes/manageMotion", {
         userId: user._id,
@@ -158,7 +77,6 @@ const MotionControl = () => {
                   ]}
                 />
               </div>
-              <ChartExpense tempData={tempData} />
               <div className="water__chartInfo">
                 <div className="water__powerConsumed">
                   {/* <ChartExpense /> */}
@@ -178,7 +96,8 @@ const MotionControl = () => {
       </MainGrid>
       {/* ----------------------------------------------- */}
 
-      <TopbarGrid className="rightColumn" item xs={3}></TopbarGrid>
+      <TopbarGrid className="rightColumn" item xs={3}>
+      </TopbarGrid>
     </ContainerGrid>
   );
 };

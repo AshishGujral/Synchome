@@ -56,13 +56,14 @@ const WaterControl = () => {
   const [nameOne, setNameOne] = useState("Yard");
   const [valueOne, setValueOne] = useState(false);
 
-  const [ledStatus, setLedStatus] = useState("OFF");
-  // slider states
+  const [ledStatus, setLedStatus] = useState("OFF")
+// slider states
   const [moistValue, setmoistValue] = React.useState([20, 37]);
-  // sensor data states
+// sensor data states
   const [sensorData, setSensorData] = useState("");
   // user from context
   const { user } = useContext(Context);
+
   const [secData, setSecData] = useState([]);
 
   const [tempData, setTempData] = useState([]);
@@ -161,7 +162,7 @@ const WaterControl = () => {
     }
 
     try {
-      // TODO
+      // TODO 
       await axios.put("/api/routes/saveSoilRange", {
         moistMax: moistValue[1],
         moistMin: moistValue[0],
@@ -174,7 +175,7 @@ const WaterControl = () => {
 
   // get moisture data from sensor
   const getMoistFromSensor = async () => {
-    // TODO
+    // TODO 
     const res = await axios.post("/api/routes/manageSoil", {
       userId: user._id,
     });
@@ -183,19 +184,18 @@ const WaterControl = () => {
 
   // set Moisture Range from DB
   const setMoistRange = async () => {
-    // TODO
+    // TODO 
     const res = await axios.get("api/routes/saveSoilRange");
     setMoistValue([res.data.moistMin, res.data.moistMax]);
   };
 
   useEffect(() => {
-    setMoistRange();
+  setMoistRange();
     // getMoistFromSensor();
   }, []);
 
   // TODO check moisture value in set range and turn water led
   useEffect(() => {
-    loadSwitchState();
     const interval = setInterval(async () => {
       getMoistFromSensor();
       // await getMoistFromSensor();
@@ -207,7 +207,11 @@ const WaterControl = () => {
       } catch (err) {
         console.log(err);
       }
-      if (moistValue[0] <= parseInt(sensorData.moisture) && parseInt(sensorData.mositure) <= moistValue[1]) {
+      if (
+        moistValue[0] <= parseInt(sensorData.moisture) &&
+        parseInt(sensorData.moisture) <= moistValue[1]
+      ) {
+        console.log("calling if led soil api");
         setLedStatus("ON");
         // await callFan();
         try {
@@ -219,10 +223,8 @@ const WaterControl = () => {
           console.log(err);
         }
         setValueOne(true);
-        localStorage.setItem("Water", true);
       } else {
         setLedStatus("OFF");
-
         try {
           await axios.post("/api/routes/manageSoilLed", {
             userId: user._id,
@@ -232,23 +234,24 @@ const WaterControl = () => {
           console.log(err);
         }
         setValueOne(false);
-        localStorage.setItem("Water", false);
       }
     }, 10000);
 
-    return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
-  }, [moistValue[1], moistValue[0], valueOne, sensorData]);
+      return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+    },
+    [moistValue[1], moistValue[0], valueOne, sensorData],
+    
+  );
 
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
 
     const status = valueOne ? "OFF" : "ON";
-    localStorage.setItem("Water", status);
     // TODO
     try {
       await axios.post("/api/routes/manageSoilLed", {
         ledStatus: status,
-        userId: user._id,
+        userId: user.user._id,
       });
     } catch (err) {
       console.log(err);
@@ -300,11 +303,11 @@ const WaterControl = () => {
                   </div>
                 </div>
               </div>
-              <ChartExpense tempData={tempData} />
               <div className="water__chartInfo">
-                <div className="water__powerConsumed"></div>
+                <div className="water__powerConsumed">
+                  {/*<ChartExpense />*/}
+                </div>
               </div>
-
               <div className="water__info" id="water__info">
                 <label htmlFor="water__info">Yard</label>
                 <h4>Last watered:</h4>
@@ -319,7 +322,8 @@ const WaterControl = () => {
       </MainGrid>
       {/* ----------------------------------------------- */}
 
-      <TopbarGrid className="rightColumn" item xs={3}></TopbarGrid>
+      <TopbarGrid className="rightColumn" item xs={3}>
+      </TopbarGrid>
     </ContainerGrid>
   );
 };
