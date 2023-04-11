@@ -100,10 +100,7 @@ router.post("/manageDHT", async (req, res) => {
 
 //Manage Soil Moisture
 router.post("/manageSoil", async (req, res) => {
-  const response = await fetch(`${espIP}/handleSoil`,{
-    method: "post",
-    headers: { "Content-Type": "application/json" },
-  });
+  const response = await fetch(`${espIP}/handleSoil`);
 
   const responseData = await response.json();
 
@@ -200,7 +197,7 @@ router.put("/saveRange", async (req, res) => {
     const dataToSave = await RANGE.findOneAndUpdate(
       { userId: req.body.userId },
       {
-        $set: req.body,
+        $set: body,
       },
       { upsert: true }
     );
@@ -224,8 +221,8 @@ router.get("/saveRange", async (req, res) => {
 router.put("/saveSoilRange", async (req, res) => {
   const body = {
     time: Date.now(),
-    moistMax: req.body.maxRange,
-    moistMin: req.body.minRange,
+    moistMax: parseInt(req.body.maxRange),
+    moistMin: parseInt(req.body.minRange),
     userId: req.body.userId,
   };
 
@@ -267,6 +264,27 @@ router.get("/dht",async (req, res) => {
 router.get("/leds",async (req, res) => {
   try {
     const data = await LED.find();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get Data from Motion
+router.get("/motion",async (req, res) => {
+  try {
+    const data = await MOTION.find();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+// Get Data from SoilLeds
+router.get("/soil",async (req, res) => {
+  try {
+    const data = await SOILLED.find();
     res.json(data);
   } catch (error) {
     res.status(500).json({ message: error.message });

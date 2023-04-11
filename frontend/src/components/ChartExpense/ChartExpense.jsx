@@ -25,12 +25,14 @@ const ChartExpense = (tempData) => {
  // const [chartData] = tempData;
   const [labels, setLabels] = useState([]);
   const [datasets,setDatasets]= useState([]);
+  console.log("tenp",tempData);
   const Box = styled("div")({
     border: "2px solid red",
     borderRadius: "5%",
     backgroundColor: "#f3e5f53e",
     height: "300px",
   });
+  console.log("datasets",datasets);
   const StyledSelect = styled(Select)`
     background-color: whitesmoke;
   `;
@@ -71,9 +73,14 @@ const ChartExpense = (tempData) => {
   // fetching data from database
 
   useEffect(() => {
+    
+    console.log("tempLength",tempData.tempData.length);
     if (tempData.tempData.length > 0) {
+      console.log("hello");
       // use type of to check we have seconds or date
       if(tempData.tempData.some(item => typeof item.seconds != "undefined")){
+        console.log("a");
+        console.log(tempData);
         setLabels(tempData.tempData.map(item => item.date));
         setDatasets([
         {
@@ -84,7 +91,9 @@ const ChartExpense = (tempData) => {
         },
         ]);
       }
+      console.log("te",tempData.tempData);
       if(tempData.tempData.some(item => typeof item.temp != "undefined")){
+        console.log("b");
         setLabels(tempData.tempData.map(item => item.date));
         setDatasets([
           {

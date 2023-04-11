@@ -52,10 +52,26 @@ const AcControlMain = () => {
   const [valueOne, setValueOne] = useState(false);
   const [tempData, setTempData] = useState([]);
 
+  const loadSwitchState = () => {
+    const switchOneStatus = localStorage.getItem("Fan");
+    if (switchOneStatus === "ON") {
+      setValueOne(true);
+    } else {
+      setValueOne(false);
+    }
+  };
+  // get data from localstorage when page reloads
+  window.addEventListener("load", loadSwitchState);
+
+  useEffect(() => {
+    loadSwitchState();
+  });
+
   const switchToggleOne = async () => {
     setValueOne(!valueOne);
 
     const status = valueOne ? "OFF" : "ON";
+    localStorage.setItem("Fan", status);
     // setFanStatus(status);
     // console.log("Kitchen ", status);
     // await callFan();
@@ -91,60 +107,64 @@ const AcControlMain = () => {
     const res = await axios.get("api/routes/saveRange");
     setTempValue([res.data.tempMin, res.data.tempMax]);
     setHumValue([res.data.humMin, res.data.humMax]);
-  };
 
-  const fetchData = async () => {
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    const response = await axios.get(
-      "http://localhost:3000/backend/routes/dht",
-      { headers }
-    );
-    const data = response.data;
-
-    /*const currentDate = new Date();
-    const before = new Date();
-    before.setDate(currentDate.getDate() - 5);*/
-
-    const filteredData = data.filter((item) => {
-      const itemDate = new Date(item.time.substr(0, 10)); // extract date portion
-      return itemDate.toISOString().substr(0, 10); //>= before.toISOString().substr(0,10) && itemDate.toISOString().substr(0,10) <= currentDate.toISOString().substr(0,10);
-    });
-
-    const groupedData = {};
-
-    filteredData.forEach((item) => {
-      const date = item.time.substr(0, 10);
-      if (!groupedData[date]) {
-        groupedData[date] = {
-          date: date,
-          temp: item.temperature,
-          humi: item.humidity,
-        };
-      } else {
-        groupedData[date].temp = item.temperature;
-        groupedData[date].humi = item.humidity;
-      }
-    });
-    const aggregatedData = Object.values(groupedData);
-    setTempData(aggregatedData);
-    console.log("aggreagte", aggregatedData);
+    console.log("setting range values");
   };
 
   useEffect(() => {
+    const fetchData = async () => {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      const response = await axios.get(
+        "http://localhost:3000/backend/routes/dht",
+        { headers }
+      );
+      const data = response.data;
+
+      /*const currentDate = new Date();
+    const before = new Date();
+    before.setDate(currentDate.getDate() - 5);*/
+
+      const filteredData = data.filter((item) => {
+        const itemDate = new Date(item.time.substr(0, 10)); // extract date portion
+        return itemDate.toISOString().substr(0, 10); //>= before.toISOString().substr(0,10) && itemDate.toISOString().substr(0,10) <= currentDate.toISOString().substr(0,10);
+      });
+
+      const groupedData = {};
+
+      filteredData.forEach((item) => {
+        const date = item.time.substr(0, 10);
+        if (!groupedData[date]) {
+          const dateNew = new Date(date);
+          groupedData[date] = {
+            date: dateNew.toDateString(),
+            temp: item.temperature,
+            humi: item.humidity,
+          };
+        } else {
+          groupedData[date].temp = item.temperature;
+          groupedData[date].humi = item.humidity;
+        }
+      });
+
+      const aggregatedData = Object.values(groupedData);
+      setTempData(aggregatedData);
+    };
     fetchData();
+  }, []);
+  useEffect(() => {
     //getTempAndHum(); // from sensor
     setTempAndHumRange(); // from DB
   }, []);
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      // console.log("Logs every 10 seconds");
-      // console.log(
-      //   "max temp val" + tempValue[1] + "min temp val" + tempValue[0]
-      // );
-      // console.log("max hum val" + humValue[1] + "min temp val" + humValue[0]);
+      console.log("Logs every 10 seconds");
+      console.log(
+        "max temp val" + tempValue[1] + "min temp val" + tempValue[0]
+      );
+      console.log("max hum val" + humValue[1] + "min temp val" + humValue[0]);
       getTempAndHum();
       // await getTempAndHum();
       try {
@@ -161,9 +181,8 @@ const AcControlMain = () => {
         (humValue[0] <= parseInt(sensorData.humidity) &&
           parseInt(sensorData.humidity) <= humValue[1])
       ) {
-        // console.log("calling if fan api");
+        console.log("calling if fan api");
         setFanStatus("ON");
-        localStorage.setItem("Fan", "ON");
         console.log(fanStatus);
         // await callFan();
         try {
@@ -178,10 +197,9 @@ const AcControlMain = () => {
         setValueOne(true);
       } else {
         setFanStatus("OFF");
-        localStorage.setItem("Fan", "OFF");
-        // console.log(fanStatus);
+        console.log(fanStatus);
 
-        // console.log("calling else fan api");
+        console.log("calling else fan api");
 
         try {
           await axios.post("/api/routes/manageFan", {
