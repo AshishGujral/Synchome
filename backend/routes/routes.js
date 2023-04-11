@@ -100,7 +100,10 @@ router.post("/manageDHT", async (req, res) => {
 
 //Manage Soil Moisture
 router.post("/manageSoil", async (req, res) => {
-  const response = await fetch(`${espIP}/handleSoil`);
+  const response = await fetch(`${espIP}/handleSoil`,{
+    method: "post",
+    headers: { "Content-Type": "application/json" }
+  });
 
   const responseData = await response.json();
 
@@ -197,7 +200,7 @@ router.put("/saveRange", async (req, res) => {
     const dataToSave = await RANGE.findOneAndUpdate(
       { userId: req.body.userId },
       {
-        $set: body,
+        $set: req.body,
       },
       { upsert: true }
     );
