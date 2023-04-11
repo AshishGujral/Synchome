@@ -230,9 +230,10 @@ const WaterControl = () => {
       } catch (err) {
         console.log(err);
       }
-      if (moistValue[0] <= parseInt("30") && parseInt("30") <= moistValue[1]) {
+      if (moistValue[0] <= parseInt(sensorData.moisture) && parseInt(sensorData.moisture) <= moistValue[1]) {
         console.log("calling if led soil api");
         setLedStatus("ON");
+        localStorage.setItem("Water", "ON");
         // console.log(fanStatus);
         // await callFan();
         try {
@@ -244,9 +245,10 @@ const WaterControl = () => {
           console.log(err);
         }
         setValueOne(true);
-        localStorage.setItem("Water", true);
+        
       } else {
         setLedStatus("OFF");
+        localStorage.setItem("Water", "OFF");
 
         console.log("calling else led soil api");
 
@@ -259,7 +261,7 @@ const WaterControl = () => {
           console.log(err);
         }
         setValueOne(false);
-        localStorage.setItem("Water", false);
+      
       }
     }, 10000);
 

@@ -128,7 +128,7 @@ const Home = () => {
     localStorage.setItem("Water", status);
     try {
       await axios.post("/api/routes/manageSoilLed", {
-        ledStatus: status,
+        status: status,
         userId: user._id,
       });
     } catch (err) {
@@ -151,6 +151,9 @@ const Home = () => {
       console.log(err);
     }
   };
+
+   
+
   const switchToggleThree = async () => {
     setValueThree(!valueThree);
 
@@ -177,7 +180,7 @@ const Home = () => {
       await axios.post("/api/routes/manageLed", {
         userId: user._id,
         name: "all",
-        mode: "normal",
+        mode: "NORMAL",
         status: status,
       });
     } catch (err) {

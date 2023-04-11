@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../../context/Context";
 import { Button, Menu, MenuItem } from "@mui/material";
 import { ArrowDropDown } from "@mui/icons-material";
+import axios from "axios";
 import "./Main.css";
 import CloudIcon from '@mui/icons-material/Cloud';
 import ThunderstormIcon from '@mui/icons-material/Thunderstorm';
@@ -11,6 +12,7 @@ const App = () => {
   // getting weather data using api
   const [weather, setWeather] = useState(null);
   const [weatherId,setweatherId] = useState();
+  const [sensorData, setSensorData] = useState("");
   var weatherCond;
   var weatherIcon;
   useEffect(() => {
@@ -29,6 +31,10 @@ const App = () => {
 
     fetchWeather();
   }, []);
+
+  useEffect(()=>{
+    getTempAndHum();
+  },[sensorData]);
   if (weatherId >= 200 && weatherId <= 232) {
     weatherIcon ="bi bi-cloud-lightning-rain";
       weatherCond = "Thunderstorm";
@@ -69,6 +75,15 @@ const App = () => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  // get temperature and humidity data from sensor
+  const getTempAndHum = async () => {
+    const res = await axios.post("/api/routes/manageDHT", {
+      userId: user._id,
+    });
+    setSensorData(res.data);
+    console.log("ses",sensorData);
+  };
+
 
   return (
     <div className="Main">
@@ -101,7 +116,7 @@ const App = () => {
 
         <div className="parent2">
           <i className="fa-solid fa-temperature-quarter parent2Icon"></i>
-          <p className=""> indoor Temp ℃</p>
+          <p className=""> indoor Temp {sensorData.temperature}℃</p>
           <i className="fa-solid fa-droplet parent2Icon"> </i>
           <p className=""> Humidity {humi}%</p>
         </div>
