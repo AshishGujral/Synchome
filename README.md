@@ -14,3 +14,4 @@
 ### ACcontrolPage
 ![page35image216283984](https://github.com/AshishGujral/Synchome/assets/84251487/30c44f8d-a613-44c1-8904-4e175bcfa98e)
 
+
